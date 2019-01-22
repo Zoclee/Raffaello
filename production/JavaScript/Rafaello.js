@@ -1,6 +1,7 @@
 (function () {
     var Rafaello = {};
 
+    // Generate BarChart from data
     Rafaello.BarChart = function (width, height, data) {
         var chart = '';
         var attr = JSON.parse('{}');
@@ -16,7 +17,7 @@
         attr['height'] = 80;
         attr['fill'] = '#cc0000';
         attr['stroke'] = '#00cc00';
-        attr['stroke-width'] = '10';
+        attr['stroke-width'] = 10;
         chart = (chart + Rafaello.BuildElement('rect', attr));
 
         chart = (chart + "</svg>");
@@ -30,13 +31,11 @@
         var i = 0;
 
         element = ("<" + name);
-
         i = 0;
         while ((i < Object.keys(attributes).length)) {
             element = (((((element + " ") + Object.keys(attributes)[i]) + "=\"") + attributes[Object.keys(attributes)[i]]) + "\"");
             i = (i + 1);
         }
-
         element = (element + " />");
 
         return element;

@@ -1,5 +1,6 @@
 module Rafaello {
     
+    // Generate BarChart from data
     method string BarChart(int32 width, int32 height, json data) {
         string chart
         json attr = ParseJSON("{}")
@@ -15,7 +16,7 @@ module Rafaello {
         attr["height"] = 80
         attr["fill"] = "#cc0000"
         attr["stroke"] = "#00cc00"
-        attr["stroke-width"] = "10"
+        attr["stroke-width"] = 10
         chart = chart + BuildElement("rect", attr)
         
         chart = chart + "</svg>"
@@ -29,13 +30,11 @@ module Rafaello {
         int32 i
 
         element = "<" + name
-
         i = 0
         while i < Count(attributes) {
             element = element + " " + attributes.KeyName(i) + "=\"" + attributes[attributes.KeyName(i)] + "\""
             i = i + 1
         }
-
         element = element + " />"
 
         return element
