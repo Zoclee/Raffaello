@@ -2,47 +2,40 @@ module Rafaello {
     
     method string BarChart(int32 width, int32 height, json data) {
         string chart
-        json style = ParseJSON("{}")
+        json attr = ParseJSON("{}")
 
         chart = "<svg "
         chart = chart + " width=\"" + width + "\""
         chart = chart + " height=\"" + height + "\""
         chart = chart + " xmlns=\"http://www.w3.org/2000/svg\">"        
         
-        style["fill"] = "#cc0000"
-        style["stroke"] = "#00cc00"
-        style["stroke-width"] = "10"
-        chart = chart + Rectangle(10, 10, 80, 80, style)
+        attr["x"] = 10
+        attr["y"] = 10
+        attr["width"] = 80
+        attr["height"] = 80
+        attr["fill"] = "#cc0000"
+        attr["stroke"] = "#00cc00"
+        attr["stroke-width"] = "10"
+        chart = chart + BuildElement("rect", attr)
         
         chart = chart + "</svg>"
 
         return chart
     }
 
-    // Format style object as Xml attribute string
-    method string FormatStyle(json style) {
-        string attrStr
+    // Build SVG element
+    method string BuildElement(string name, json attributes) {
+        string element
         int32 i
 
+        element = "<" + name
+
         i = 0
-        while i < Count(style) {
-            attrStr = attrStr + " " + style.KeyName(i) + "=\"" + style[style.KeyName(i)] + "\""
+        while i < Count(attributes) {
+            element = element + " " + attributes.KeyName(i) + "=\"" + attributes[attributes.KeyName(i)] + "\""
             i = i + 1
         }
 
-        return attrStr
-    }
-
-    // Create a rect element
-    method string Rectangle(int32 x, int32 y, int32 width, int32 height, json style) {
-        string element
-
-        element = "<rect "
-        element = element + " x=\"" + Str(x) + "\""
-        element = element + " y=\"" + Str(y) + "\""
-        element = element + " width=\"" + Str(width) + "\""
-        element = element + " height=\"" + Str(height) + "\""
-        element = element + FormatStyle(style)
         element = element + " />"
 
         return element

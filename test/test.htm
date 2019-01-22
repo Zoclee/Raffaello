@@ -9,7 +9,6 @@
 </html>
 <script>
     var parser = new DOMParser();
-    alert(Rafaello.BarChart(100, 100, {}));
     var dom = parser.parseFromString(Rafaello.BarChart(100, 100, {}), "text/xml");
     document.getElementById('chart').appendChild(dom.documentElement);
 </script>

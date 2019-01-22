@@ -3,47 +3,40 @@
 
     Rafaello.BarChart = function (width, height, data) {
         var chart = '';
-        var style = JSON.parse('{}');
+        var attr = JSON.parse('{}');
 
         chart = '<svg ';
         chart = (((chart + " width=\"") + width) + "\"");
         chart = (((chart + " height=\"") + height) + "\"");
         chart = (chart + " xmlns=\"http://www.w3.org/2000/svg\">");
 
-        style['fill'] = '#cc0000';
-        style['stroke'] = '#00cc00';
-        style['stroke-width'] = '10';
-        chart = (chart + Rafaello.Rectangle(10, 10, 80, 80, style));
+        attr['x'] = 10;
+        attr['y'] = 10;
+        attr['width'] = 80;
+        attr['height'] = 80;
+        attr['fill'] = '#cc0000';
+        attr['stroke'] = '#00cc00';
+        attr['stroke-width'] = '10';
+        chart = (chart + Rafaello.BuildElement('rect', attr));
 
         chart = (chart + "</svg>");
 
         return chart;
     }
 
-    // Format style object as Xml attribute string
-    Rafaello.FormatStyle = function (style) {
-        var attrStr = '';
+    // Build SVG element
+    Rafaello.BuildElement = function (name, attributes) {
+        var element = '';
         var i = 0;
 
+        element = ("<" + name);
+
         i = 0;
-        while ((i < Object.keys(style).length)) {
-            attrStr = (((((attrStr + " ") + Object.keys(style)[i]) + "=\"") + style[Object.keys(style)[i]]) + "\"");
+        while ((i < Object.keys(attributes).length)) {
+            element = (((((element + " ") + Object.keys(attributes)[i]) + "=\"") + attributes[Object.keys(attributes)[i]]) + "\"");
             i = (i + 1);
         }
 
-        return attrStr;
-    }
-
-    // Create a rect element
-    Rafaello.Rectangle = function (x, y, width, height, style) {
-        var element = '';
-
-        element = '<rect ';
-        element = (((element + " x=\"") + (x).toString()) + "\"");
-        element = (((element + " y=\"") + (y).toString()) + "\"");
-        element = (((element + " width=\"") + (width).toString()) + "\"");
-        element = (((element + " height=\"") + (height).toString()) + "\"");
-        element = (element + Rafaello.FormatStyle(style));
         element = (element + " />");
 
         return element;
