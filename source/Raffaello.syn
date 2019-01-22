@@ -2,10 +2,50 @@ module Rafaello {
     
     method string BarChart(int32 width, int32 height, json data) {
         string chart
+        json style = ParseJSON("{}")
 
-        chart = "<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"red\" stroke-width=\"4\" fill=\"yellow\" /></svg>"
+        chart = "<svg "
+        chart = chart + " width=\"" + width + "\""
+        chart = chart + " height=\"" + height + "\""
+        chart = chart + " xmlns=\"http://www.w3.org/2000/svg\">"        
+        
+        style["fill"] = "#cc0000"
+        style["stroke"] = "#00cc00"
+        style["stroke-width"] = "10"
+        chart = chart + Rectangle(10, 10, 80, 80, style)
+        
+        chart = chart + "</svg>"
 
         return chart
+    }
+
+    // Format style object as Xml attribute string
+    method string FormatStyle(json style) {
+        string attrStr
+        int32 i
+
+        i = 0
+        while i < Count(style) {
+            attrStr = attrStr + " " + style.KeyName(i) + "=\"" + style[style.KeyName(i)] + "\""
+            i = i + 1
+        }
+
+        return attrStr
+    }
+
+    // Create a rect element
+    method string Rectangle(int32 x, int32 y, int32 width, int32 height, json style) {
+        string element
+
+        element = "<rect "
+        element = element + " x=\"" + Str(x) + "\""
+        element = element + " y=\"" + Str(y) + "\""
+        element = element + " width=\"" + Str(width) + "\""
+        element = element + " height=\"" + Str(height) + "\""
+        element = element + FormatStyle(style)
+        element = element + " />"
+
+        return element
     }
 
 }
