@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="../production/JavaScript/Rafaello.js"></script>
+    </head>
+    <body>
+        <div id="chart"></div>
+    </body>
+</html>
+<script>
+    var parser = new DOMParser();
+    var dom = parser.parseFromString(Rafaello.BarChart(100, 100, {}), "text/xml");
+    document.getElementById('chart').appendChild(dom.documentElement);
+</script>
