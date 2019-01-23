@@ -18,7 +18,6 @@ module Rafaello {
 
         // configure styling attributes
 
-        
         attr["width"] = (width - ((points - 1) * 3)) \ points
         attr["fill"] = "#cc0000"
         attr["stroke"] = "#00cc00"
@@ -26,7 +25,6 @@ module Rafaello {
         
         // determine maximum height
 
-        
         max = chartData["datasets"][0]["data"][0]
         i = 1
         while i < points {
