@@ -21,14 +21,14 @@ class Rafaello {
 
         // configure styling attributes
 
-
-        $attr->{"width"} = intval(floor(($width - (($points - 1) * 3)) / $points));
-        $attr->{"fill"} = "#cc0000";
-        $attr->{"stroke"} = "#00cc00";
+        $attr->{"width"} = intval(floor(($width - (($points - 1) * 5)) / $points));
+        $attr->{"fill"} = "#00cc00";
+        $attr->{"fill-opacity"} = 0.75;
+        $attr->{"stroke"} = "#004000";
+        $attr->{"stroke-opacity"} = 0.75;
         $attr->{"stroke-width"} = 1;
 
         // determine maximum height
-
 
         $max = $chartData->{"datasets"}[0]->{"data"}[0];
         $i = 1;
@@ -43,7 +43,7 @@ class Rafaello {
 
         $i = 0;
         while (($i < $points)) {
-            $attr->{"x"} = (($attr->{"width"} * $i) + (3 * $i));
+            $attr->{"x"} = (($attr->{"width"} * $i) + (5 * $i));
             $attr->{"height"} = round(($height * ($chartData->{"datasets"}[0]->{"data"}[$i] / $max)), 0);
             $attr->{"y"} = ($height - $attr->{"height"});
             $chart = ($chart . self::rafBuildElement("rect", $attr));

@@ -19,14 +19,14 @@
 
         // configure styling attributes
 
-
-        attr['width'] = parseInt(Math.floor((width - ((points - 1) * 3)) / points));
-        attr['fill'] = '#cc0000';
-        attr['stroke'] = '#00cc00';
+        attr['width'] = parseInt(Math.floor((width - ((points - 1) * 5)) / points));
+        attr['fill'] = '#00cc00';
+        attr['fill-opacity'] = 0.75;
+        attr['stroke'] = '#004000';
+        attr['stroke-opacity'] = 0.75;
         attr['stroke-width'] = 1;
 
         // determine maximum height
-
 
         max = chartData['datasets'][0]['data'][0];
         i = 1;
@@ -41,7 +41,7 @@
 
         i = 0;
         while ((i < points)) {
-            attr['x'] = ((attr['width'] * i) + (3 * i));
+            attr['x'] = ((attr['width'] * i) + (5 * i));
             attr['height'] = (Math.round((height * (chartData['datasets'][0]['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
             attr['y'] = (height - attr['height']);
             chart = (chart + Rafaello.rafBuildElement('rect', attr));
