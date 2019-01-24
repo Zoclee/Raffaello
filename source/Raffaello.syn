@@ -8,6 +8,8 @@ module Rafaello {
         int32 points
         int32 i 
         int32 max
+        int32 yScaleMargin
+        int32 maxScaleLen
 
         chart = "<svg "
         chart = chart + " width=\"" + width + "\""
@@ -16,25 +18,50 @@ module Rafaello {
         
         points = count(chartData["datasets"][0]["data"])
 
-        // configure styling attributes
+        // determine scale margins
 
-        attr["width"] = (width - ((points - 1) * 5)) \ points
-        attr["fill"] = "#00cc00"
-        attr["fill-opacity"] = 0.75
-        attr["stroke"] = "#004000"
-        attr["stroke-opacity"] = 0.75
-        attr["stroke-width"] = 1
-        
+        maxScaleLen = 9
+        yScaleMargin = maxScaleLen * 9
+
         // determine maximum height
 
         max = chartData["datasets"][0]["data"][0]
         i = 1
         while i < points {
             if chartData["datasets"][0]["data"][i] > max {
-               max =  chartData["datasets"][0]["data"][i]
+               max = chartData["datasets"][0]["data"][i]
             }
             i = i + 1
         }
+
+        // y-axis
+
+        attr = ParseJSON("{}")
+        attr["x1"] = width - yScaleMargin + 5
+        attr["y1"] = 0
+        attr["x2"] = width - yScaleMargin + 5
+        attr["y2"] = height
+        attr["stroke"] = "#000000"
+        attr["stroke-width"] = 1
+        chart = chart + rafBuildElement("line", attr, "")
+
+        // scale values
+
+        attr = ParseJSON("{}")
+        attr["x"] = width - yScaleMargin + 10
+        attr["y"] = 100
+        attr["fill"] = "#000000"    
+        chart = chart + rafBuildElement("text", attr, "Test12345")
+
+        // configure styling attributes
+
+        attr = ParseJSON("{}")
+        attr["width"] = (width - ((points - 1) * 5) - yScaleMargin) \ points
+        attr["fill"] = "#00cc00"
+        attr["fill-opacity"] = 0.75
+        attr["stroke"] = "#004000"
+        attr["stroke-opacity"] = 0.75
+        attr["stroke-width"] = 1
 
         // create bars
 
@@ -43,7 +70,7 @@ module Rafaello {
             attr["x"] = attr["width"] * i + (5 * i)
             attr["height"] = Round( height * (chartData["datasets"][0]["data"][i] / max), 0 )
             attr["y"] = height - attr["height"]
-            chart = chart + rafBuildElement("rect", attr)
+            chart = chart + rafBuildElement("rect", attr, "")
             i = i + 1
         }
 
@@ -54,7 +81,7 @@ module Rafaello {
 
     // ***** rafBuildElement ********************
 
-    method string rafBuildElement(string name, json attributes) {
+    method string rafBuildElement(string name, json attributes, string content) {
         string element
         int32 i
 
@@ -64,7 +91,12 @@ module Rafaello {
             element = element + " " + attributes.KeyName(i) + "=\"" + attributes[attributes.KeyName(i)] + "\""
             i = i + 1
         }
-        element = element + " />"
+        if content <> "" {
+            element = element + ">" + content + "</" + name + ">"
+        } else {
+            element = element + " />"
+        }
+       
 
         return element
     }
