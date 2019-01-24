@@ -9,28 +9,53 @@
         var points = 0;
         var i = 0;
         var max = 0;
-        var yScaleMargin = 0;
+        var scaleMargin = 0;
         var maxScaleLen = 0;
+        var barsOffset = 0;
+        var scaleOffset = 0;
+        var yAxisOffset = 0;
+        var dataSet = JSON.parse('{}');
+        var position = 'left';
+
+        dataSet = chartData['datasets'][0];
+
+        if (chartData.hasOwnProperty('options')) {
+            if (chartData['options'].hasOwnProperty('yaxis')) {
+                if (chartData['options']['yaxis'].hasOwnProperty('position')) {
+                    position = (chartData['options']['yaxis']['position']).toLowerCase();
+                }
+            }
+        }
 
         chart = '<svg ';
         chart = (((chart + " width=\"") + width) + "\"");
         chart = (((chart + " height=\"") + height) + "\"");
         chart = (chart + " xmlns=\"http://www.w3.org/2000/svg\">");
 
-        points = Object.keys(chartData['datasets'][0]['data']).length;
+        points = Object.keys(dataSet['data']).length;
 
-        // determine scale margins
+        // determine scale margin
 
         maxScaleLen = 9;
-        yScaleMargin = (maxScaleLen * 9);
+        scaleMargin = (maxScaleLen * 9);
+
+        if ((position == 'right')) {
+            barsOffset = 0;
+            yAxisOffset = ((width - scaleMargin) + 5);
+            scaleOffset = (yAxisOffset + 5);
+        } else {
+            barsOffset = scaleMargin;
+            yAxisOffset = (barsOffset - 5);
+            scaleOffset = 0;
+        }
 
         // determine maximum height
 
-        max = chartData['datasets'][0]['data'][0];
+        max = dataSet['data'][0];
         i = 1;
         while ((i < points)) {
-            if ((chartData['datasets'][0]['data'][i] > max)) {
-                max = chartData['datasets'][0]['data'][i];
+            if ((dataSet['data'][i] > max)) {
+                max = dataSet['data'][i];
             }
             i = (i + 1);
         }
@@ -38,9 +63,9 @@
         // y-axis
 
         attr = JSON.parse('{}');
-        attr['x1'] = ((width - yScaleMargin) + 5);
+        attr['x1'] = yAxisOffset;
         attr['y1'] = 0;
-        attr['x2'] = ((width - yScaleMargin) + 5);
+        attr['x2'] = yAxisOffset;
         attr['y2'] = height;
         attr['stroke'] = '#000000';
         attr['stroke-width'] = 1;
@@ -49,7 +74,7 @@
         // scale values
 
         attr = JSON.parse('{}');
-        attr['x'] = ((width - yScaleMargin) + 10);
+        attr['x'] = scaleOffset;
         attr['y'] = 100;
         attr['fill'] = '#000000';
         chart = (chart + Rafaello.rafBuildElement('text', attr, 'Test12345'));
@@ -57,7 +82,7 @@
         // configure styling attributes
 
         attr = JSON.parse('{}');
-        attr['width'] = parseInt(Math.floor(((width - ((points - 1) * 5)) - yScaleMargin) / points));
+        attr['width'] = parseInt(Math.floor(((width - ((points - 1) * 5)) - scaleMargin) / points));
         attr['fill'] = '#00cc00';
         attr['fill-opacity'] = 0.75;
         attr['stroke'] = '#004000';
@@ -68,8 +93,8 @@
 
         i = 0;
         while ((i < points)) {
-            attr['x'] = ((attr['width'] * i) + (5 * i));
-            attr['height'] = (Math.round((height * (chartData['datasets'][0]['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            attr['x'] = ((barsOffset + (attr['width'] * i)) + (5 * i));
+            attr['height'] = (Math.round((height * (dataSet['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
             attr['y'] = (height - attr['height']);
             chart = (chart + Rafaello.rafBuildElement('rect', attr, ''));
             i = (i + 1);

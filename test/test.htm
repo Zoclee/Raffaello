@@ -4,11 +4,17 @@
         <script src="../production/JavaScript/Rafaello.js"></script>
     </head>
     <body>
-        <div id="chart"></div>
+        <div id="chart1"></div>
+        <div id="chart2"></div>
     </body>
 </html>
 <script>
     var parser = new DOMParser();
-    var dom = parser.parseFromString(Rafaello.BarChart(640, 480, {"datasets":[{"label":"My bar chart", "data":[10,25,50,75,100]}]}), "text/xml");
-    document.getElementById('chart').appendChild(dom.documentElement);
+    var dom;
+    
+    dom = parser.parseFromString(Rafaello.BarChart(300, 200, {"datasets":[{"label":"Test Chart", "data":[10,25,50,75,100]}]}), "text/xml");
+    document.getElementById('chart1').appendChild(dom.documentElement);
+
+    dom = parser.parseFromString(Rafaello.BarChart(300, 200, {"datasets":[{"label":"Test Chart", "data":[10,25,50,75,100]}],"options":{"yaxis":{"position":"right"}}}), "text/xml");
+    document.getElementById('chart2').appendChild(dom.documentElement);
 </script>
