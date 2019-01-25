@@ -14,7 +14,7 @@
     
     //alert(Rafaello.Render(300, 200, {"datasets":[{"label":"Test Chart", "data":[10,25,50,75,100]}], "components":[{"type":"barchart","dataset":0}]}));
 
-    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart","datasetindex":0}]}), "text/xml");
+    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart","dataset":0}]}), "text/xml");
     document.getElementById('chart1').appendChild(dom.documentElement);
 
     //dom = parser.parseFromString(Rafaello.BarChart(300, 200, {"datasets":[{"label":"Test Chart", "data":[10,25,50,75,100]}],"options":{"yaxis":{"position":"right"}}}), "text/xml");

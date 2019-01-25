@@ -125,7 +125,7 @@ class Rafaello {
             $component = $object->{"components"}[$i];
             switch ($component->{"type"}) {
                 case "barchart":
-                    $dataSet = $object->{"datasets"}[$component->{"datasetindex"}];
+                    $dataSet = $object->{"datasets"}[$component->{"dataset"}];
                     $composition = ($composition . self::BarChart($width, $height, $dataSet));
                     break;
             }
