@@ -3,51 +3,29 @@
 
     // ***** BarChart ********************
 
-    Rafaello.BarChart = function (width, height, chartData) {
-        var chart = '';
+    Rafaello.BarChart = function (width, height, dataSet) {
+        var component = '';
         var attr = JSON.parse('{}');
         var points = 0;
         var i = 0;
         var max = 0;
-        var scaleMargin = 0;
-        var maxScaleLen = 0;
-        var barsOffset = 0;
-        var scaleOffset = 0;
-        var yAxisOffset = 0;
-        var dataSet = JSON.parse('{}');
-        var position = 'left';
-
-        dataSet = chartData['datasets'][0];
-
-        if (chartData.hasOwnProperty('options')) {
-            if (chartData['options'].hasOwnProperty('yaxis')) {
-                if (chartData['options']['yaxis'].hasOwnProperty('position')) {
-                    position = (chartData['options']['yaxis']['position']).toLowerCase();
-                }
-            }
-        }
-
-        chart = '<svg ';
-        chart = (((chart + " width=\"") + width) + "\"");
-        chart = (((chart + " height=\"") + height) + "\"");
-        chart = (chart + " xmlns=\"http://www.w3.org/2000/svg\">");
 
         points = Object.keys(dataSet['data']).length;
 
         // determine scale margin
 
-        maxScaleLen = 9;
-        scaleMargin = (maxScaleLen * 9);
+        /* maxScaleLen = 9
+        scaleMargin = maxScaleLen * 9
 
-        if ((position == 'right')) {
-            barsOffset = 0;
-            yAxisOffset = ((width - scaleMargin) + 5);
-            scaleOffset = (yAxisOffset + 5);
+        if position = "right" {
+            barsOffset = 0
+            yAxisOffset = width - scaleMargin + 5
+            scaleOffset = yAxisOffset + 5    
         } else {
-            barsOffset = scaleMargin;
-            yAxisOffset = (barsOffset - 5);
-            scaleOffset = 0;
-        }
+            barsOffset = scaleMargin            
+            yAxisOffset = barsOffset - 5
+            scaleOffset = 0
+        }*/
 
         // determine maximum height
 
@@ -62,27 +40,27 @@
 
         // y-axis
 
-        attr = JSON.parse('{}');
-        attr['x1'] = yAxisOffset;
-        attr['y1'] = 0;
-        attr['x2'] = yAxisOffset;
-        attr['y2'] = height;
-        attr['stroke'] = '#000000';
-        attr['stroke-width'] = 1;
-        chart = (chart + Rafaello.rafBuildElement('line', attr, ''));
+        /*attr = ParseJSON("{}")
+        attr["x1"] = yAxisOffset
+        attr["y1"] = 0
+        attr["x2"] = yAxisOffset
+        attr["y2"] = height
+        attr["stroke"] = "#000000"
+        attr["stroke-width"] = 1
+        component = component + BuildElement("line", attr, "")
 
         // scale values
 
-        attr = JSON.parse('{}');
-        attr['x'] = scaleOffset;
-        attr['y'] = 100;
-        attr['fill'] = '#000000';
-        chart = (chart + Rafaello.rafBuildElement('text', attr, 'Test12345'));
+        attr = ParseJSON("{}")
+        attr["x"] = scaleOffset
+        attr["y"] = 100
+        attr["fill"] = "#000000"    
+        component = component + BuildElement("text", attr, "Test12345")*/
 
         // configure styling attributes
 
         attr = JSON.parse('{}');
-        attr['width'] = parseInt(Math.floor(((width - ((points - 1) * 5)) - scaleMargin) / points));
+        attr['width'] = parseInt(Math.floor((width - ((points - 1) * 5)) / points));
         attr['fill'] = '#00cc00';
         attr['fill-opacity'] = 0.75;
         attr['stroke'] = '#004000';
@@ -93,21 +71,19 @@
 
         i = 0;
         while ((i < points)) {
-            attr['x'] = ((barsOffset + (attr['width'] * i)) + (5 * i));
+            attr['x'] = ((attr['width'] * i) + (5 * i));
             attr['height'] = (Math.round((height * (dataSet['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
             attr['y'] = (height - attr['height']);
-            chart = (chart + Rafaello.rafBuildElement('rect', attr, ''));
+            component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
         }
 
-        chart = (chart + "</svg>");
-
-        return chart;
+        return component;
     }
 
-    // ***** rafBuildElement ********************
+    // ***** BuildElement ********************
 
-    Rafaello.rafBuildElement = function (name, attributes, content) {
+    Rafaello.BuildElement = function (name, attributes, content) {
         var element = '';
         var i = 0;
 
@@ -125,6 +101,39 @@
 
 
         return element;
+    }
+
+    // ***** Render ********************
+
+    Rafaello.Render = function (width, height, object) {
+        var composition = '';
+        var dataSet = JSON.parse('{}');
+        var i = 0;
+        var componentCount = 0;
+        var component = JSON.parse('{}');
+
+        composition = '<svg ';
+        composition = (((composition + " width=\"") + width) + "\"");
+        composition = (((composition + " height=\"") + height) + "\"");
+        composition = (composition + " xmlns=\"http://www.w3.org/2000/svg\">");
+
+        componentCount = Object.keys(object['components']).length;
+        i = 0;
+        while ((i < componentCount)) {
+            component = object['components'][i];
+            switch (component['type']) {
+                case "barchart":
+                    dataSet = object['datasets'][component['datasetindex']];
+                    composition = (composition + Rafaello.BarChart(width, height, dataSet));
+                    break;
+            }
+
+            i = (i + 1);
+        }
+
+        composition = (composition + "</svg>");
+
+        return composition;
     }
 
     window.Rafaello = Rafaello;

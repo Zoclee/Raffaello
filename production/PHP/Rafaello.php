@@ -5,51 +5,29 @@ class Rafaello {
 
     // ***** BarChart ********************
 
-    public static function BarChart($width, $height, $chartData) {
-        $chart = "";
+    public static function BarChart($width, $height, $dataSet) {
+        $component = "";
         $attr = json_decode("{}");
         $points = 0;
         $i = 0;
         $max = 0;
-        $scaleMargin = 0;
-        $maxScaleLen = 0;
-        $barsOffset = 0;
-        $scaleOffset = 0;
-        $yAxisOffset = 0;
-        $dataSet = json_decode("{}");
-        $position = "left";
-
-        $dataSet = $chartData->{"datasets"}[0];
-
-        if (property_exists($chartData, "options")) {
-            if (property_exists($chartData->{"options"}, "yaxis")) {
-                if (property_exists($chartData->{"options"}->{"yaxis"}, "position")) {
-                    $position = strtolower($chartData->{"options"}->{"yaxis"}->{"position"});
-                }
-            }
-        }
-
-        $chart = "<svg ";
-        $chart = ((($chart . " width=\"") . $width) . "\"");
-        $chart = ((($chart . " height=\"") . $height) . "\"");
-        $chart = ($chart . " xmlns=\"http://www.w3.org/2000/svg\">");
 
         $points = count($dataSet->{"data"});
 
         // determine scale margin
 
-        $maxScaleLen = 9;
-        $scaleMargin = ($maxScaleLen * 9);
+        /* maxScaleLen = 9
+        scaleMargin = maxScaleLen * 9
 
-        if (($position == "right")) {
-            $barsOffset = 0;
-            $yAxisOffset = (($width - $scaleMargin) + 5);
-            $scaleOffset = ($yAxisOffset + 5);
+        if position = "right" {
+            barsOffset = 0
+            yAxisOffset = width - scaleMargin + 5
+            scaleOffset = yAxisOffset + 5    
         } else {
-            $barsOffset = $scaleMargin;
-            $yAxisOffset = ($barsOffset - 5);
-            $scaleOffset = 0;
-        }
+            barsOffset = scaleMargin            
+            yAxisOffset = barsOffset - 5
+            scaleOffset = 0
+        }*/
 
         // determine maximum height
 
@@ -64,27 +42,27 @@ class Rafaello {
 
         // y-axis
 
-        $attr = json_decode("{}");
-        $attr->{"x1"} = $yAxisOffset;
-        $attr->{"y1"} = 0;
-        $attr->{"x2"} = $yAxisOffset;
-        $attr->{"y2"} = $height;
-        $attr->{"stroke"} = "#000000";
-        $attr->{"stroke-width"} = 1;
-        $chart = ($chart . self::rafBuildElement("line", $attr, ""));
+        /*attr = ParseJSON("{}")
+        attr["x1"] = yAxisOffset
+        attr["y1"] = 0
+        attr["x2"] = yAxisOffset
+        attr["y2"] = height
+        attr["stroke"] = "#000000"
+        attr["stroke-width"] = 1
+        component = component + BuildElement("line", attr, "")
 
         // scale values
 
-        $attr = json_decode("{}");
-        $attr->{"x"} = $scaleOffset;
-        $attr->{"y"} = 100;
-        $attr->{"fill"} = "#000000";
-        $chart = ($chart . self::rafBuildElement("text", $attr, "Test12345"));
+        attr = ParseJSON("{}")
+        attr["x"] = scaleOffset
+        attr["y"] = 100
+        attr["fill"] = "#000000"    
+        component = component + BuildElement("text", attr, "Test12345")*/
 
         // configure styling attributes
 
         $attr = json_decode("{}");
-        $attr->{"width"} = intval(floor((($width - (($points - 1) * 5)) - $scaleMargin) / $points));
+        $attr->{"width"} = intval(floor(($width - (($points - 1) * 5)) / $points));
         $attr->{"fill"} = "#00cc00";
         $attr->{"fill-opacity"} = 0.75;
         $attr->{"stroke"} = "#004000";
@@ -95,21 +73,19 @@ class Rafaello {
 
         $i = 0;
         while (($i < $points)) {
-            $attr->{"x"} = (($barsOffset + ($attr->{"width"} * $i)) + (5 * $i));
+            $attr->{"x"} = (($attr->{"width"} * $i) + (5 * $i));
             $attr->{"height"} = round(($height * ($dataSet->{"data"}[$i] / $max)), 0);
             $attr->{"y"} = ($height - $attr->{"height"});
-            $chart = ($chart . self::rafBuildElement("rect", $attr, ""));
+            $component = ($component . self::BuildElement("rect", $attr, ""));
             $i = ($i + 1);
         }
 
-        $chart = ($chart . "</svg>");
-
-        return $chart;
+        return $component;
     }
 
-    // ***** rafBuildElement ********************
+    // ***** BuildElement ********************
 
-    public static function rafBuildElement($name, $attributes, $content) {
+    public static function BuildElement($name, $attributes, $content) {
         $element = "";
         $i = 0;
 
@@ -127,6 +103,39 @@ class Rafaello {
 
 
         return $element;
+    }
+
+    // ***** Render ********************
+
+    public static function Render($width, $height, $object) {
+        $composition = "";
+        $dataSet = json_decode("{}");
+        $i = 0;
+        $componentCount = 0;
+        $component = json_decode("{}");
+
+        $composition = "<svg ";
+        $composition = ((($composition . " width=\"") . $width) . "\"");
+        $composition = ((($composition . " height=\"") . $height) . "\"");
+        $composition = ($composition . " xmlns=\"http://www.w3.org/2000/svg\">");
+
+        $componentCount = count($object->{"components"});
+        $i = 0;
+        while (($i < $componentCount)) {
+            $component = $object->{"components"}[$i];
+            switch ($component->{"type"}) {
+                case "barchart":
+                    $dataSet = $object->{"datasets"}[$component->{"datasetindex"}];
+                    $composition = ($composition . self::BarChart($width, $height, $dataSet));
+                    break;
+            }
+
+            $i = ($i + 1);
+        }
+
+        $composition = ($composition . "</svg>");
+
+        return $composition;
     }
 
 }
