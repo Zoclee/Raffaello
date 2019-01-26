@@ -56,6 +56,71 @@
         return component;
     }
 
+    // ***** LineChart ********************
+
+    Rafaello.LineChart = function (svgWidth, svgHeight, dataset, options) {
+        var component = '';
+        var attr = JSON.parse('{}');
+        var points = 0;
+        var i = 0;
+        var max = 0;
+        var path = '';
+        var pointWidth = 0;
+        var tmpHeight = 0;
+
+        // initialize default values
+
+        if (!(options.hasOwnProperty('x'))) {
+            options['x'] = 0;
+        }
+        if (!(options.hasOwnProperty('width'))) {
+            options['width'] = (svgWidth - options['x']);
+        }
+
+        // determine maximum height
+
+        points = Object.keys(dataset['data']).length;
+
+        max = dataset['data'][0];
+        i = 1;
+        while ((i < points)) {
+            if ((dataset['data'][i] > max)) {
+                max = dataset['data'][i];
+            }
+            i = (i + 1);
+        }
+
+        // configure styling attributes
+
+        pointWidth = parseInt(Math.floor((options['width'] - ((points - 1) * 5)) / points));
+
+        attr = JSON.parse('{}');
+        attr['stroke'] = '#004000';
+        attr['stroke-opacity'] = 0.75;
+        attr['stroke-width'] = 1;
+        attr['fill'] = 'none';
+
+        // create lines
+
+        path = 'M';
+        i = 0;
+        while ((i < points)) {
+            path = (path + (((((options['x'] + (pointWidth * i)) + (pointWidth * 0.5)) + (5 * i)) + 0.5)).toString());
+            tmpHeight = (Math.round((svgHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            path = ((path + " ") + (((svgHeight - tmpHeight) + 0.5)).toString());
+            i = (i + 1);
+            if ((i < points)) {
+                path = (path + " ");
+            }
+        }
+
+        attr['d'] = path;
+
+        component = Rafaello.BuildElement('path', attr, '');
+
+        return component;
+    }
+
     // ***** Scale ********************
 
     Rafaello.Scale = function (width, height, dataset, options) {
@@ -250,6 +315,9 @@
             switch (component['type']) {
                 case "bar":
                     composition = (composition + Rafaello.BarChart((svgWidth - 1), (svgHeight - 1), dataset, options));
+                    break;
+                case "line":
+                    composition = (composition + Rafaello.LineChart((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
                 case "scale":
                     composition = (composition + Rafaello.Scale((svgWidth - 1), (svgHeight - 1), dataset, options));

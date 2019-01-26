@@ -58,6 +58,71 @@ class Rafaello {
         return $component;
     }
 
+    // ***** LineChart ********************
+
+    public static function LineChart($svgWidth, $svgHeight, $dataset, $options) {
+        $component = "";
+        $attr = json_decode("{}");
+        $points = 0;
+        $i = 0;
+        $max = 0;
+        $path = "";
+        $pointWidth = 0;
+        $tmpHeight = 0;
+
+        // initialize default values
+
+        if (!(property_exists($options, "x"))) {
+            $options->{"x"} = 0;
+        }
+        if (!(property_exists($options, "width"))) {
+            $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+
+        // determine maximum height
+
+        $points = count($dataset->{"data"});
+
+        $max = $dataset->{"data"}[0];
+        $i = 1;
+        while (($i < $points)) {
+            if (($dataset->{"data"}[$i] > $max)) {
+                $max = $dataset->{"data"}[$i];
+            }
+            $i = ($i + 1);
+        }
+
+        // configure styling attributes
+
+        $pointWidth = intval(floor(($options->{"width"} - (($points - 1) * 5)) / $points));
+
+        $attr = json_decode("{}");
+        $attr->{"stroke"} = "#004000";
+        $attr->{"stroke-opacity"} = 0.75;
+        $attr->{"stroke-width"} = 1;
+        $attr->{"fill"} = "none";
+
+        // create lines
+
+        $path = "M";
+        $i = 0;
+        while (($i < $points)) {
+            $path = ($path . (string)((((($options->{"x"} + ($pointWidth * $i)) + ($pointWidth * 0.5)) + (5 * $i)) + 0.5)));
+            $tmpHeight = round(($svgHeight * ($dataset->{"data"}[$i] / $max)), 0);
+            $path = (($path . " ") . (string)((($svgHeight - $tmpHeight) + 0.5)));
+            $i = ($i + 1);
+            if (($i < $points)) {
+                $path = ($path . " ");
+            }
+        }
+
+        $attr->{"d"} = $path;
+
+        $component = self::BuildElement("path", $attr, "");
+
+        return $component;
+    }
+
     // ***** Scale ********************
 
     public static function Scale($width, $height, $dataset, $options) {
@@ -252,6 +317,9 @@ class Rafaello {
             switch ($component->{"type"}) {
                 case "bar":
                     $composition = ($composition . self::BarChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
+                    break;
+                case "line":
+                    $composition = ($composition . self::LineChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
                     break;
                 case "scale":
                     $composition = ($composition . self::Scale(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));

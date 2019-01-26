@@ -51,6 +51,67 @@ module Rafaello {
         return component
     }
 
+   // ***** LineChart ********************
+
+    method string LineChart(int32 svgWidth, int32 svgHeight, json dataset, json options) {
+        string component
+        json attr
+        int32 points
+        int32 i 
+        int32 max
+        string path
+        int32 pointWidth
+        int32 tmpHeight
+
+        // initialize default values
+
+        if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
+
+        // determine maximum height
+
+        points = count(dataset["data"])
+
+        max = dataset["data"][0]
+        i = 1
+        while i < points {
+            if dataset["data"][i] > max {
+               max = dataset["data"][i]
+            }
+            i = i + 1
+        }
+
+        // configure styling attributes
+
+        pointWidth = (options["width"] - (points - 1) * 5) \ points
+
+        attr = ParseJSON("{}")        
+        attr["stroke"] = "#004000"
+        attr["stroke-opacity"] = 0.75
+        attr["stroke-width"] = 1
+        attr["fill"] = "none"
+
+        // create lines
+
+        path = "M"
+        i = 0
+        while i < points {       
+            path = path + Str(options["x"] + pointWidth * i + pointWidth * 0.5 + (5 * i) + 0.5)
+            tmpHeight = Round( svgHeight * (dataset["data"][i] / max), 0 )
+            path = path + " " + Str(svgHeight - tmpHeight + 0.5)
+            i = i + 1
+            if i < points {
+                path = path + " "
+            }
+        }
+
+        attr["d"] = path
+
+        component = BuildElement("path", attr, "")
+
+        return component
+    }
+
     // ***** Scale ********************
 
     method string Scale(int32 width, int32 height, json dataset, json options) {
@@ -242,6 +303,9 @@ module Rafaello {
                 case "bar" {                                       
                     composition = composition + BarChart(svgWidth - 1, svgHeight - 1, dataset, options)
                 }
+                case "line" {                                       
+                    composition = composition + LineChart(svgWidth - 1, svgHeight - 1, dataset, options)
+                }                
                 case "scale" {
                     composition = composition + Scale(svgWidth - 1, svgHeight - 1, dataset, options)
                 }
