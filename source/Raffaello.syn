@@ -36,9 +36,9 @@ module Rafaello {
 
         i = 0
         while i < points {
-            attr["x"] =  attr["width"] * i + (5 * i)
+            attr["x"] =  attr["width"] * i + (5 * i) + 0.5
             attr["height"] = Round( height * (dataset["data"][i] / max), 0 )
-            attr["y"] = height - attr["height"]
+            attr["y"] = height - attr["height"] + 0.5
             component = component + BuildElement("rect", attr, "")
             i = i + 1
         }
@@ -189,10 +189,10 @@ module Rafaello {
 
             switch component["type"] {
                 case "barchart" {                                       
-                    composition = composition + BarChart(width, height - 1, dataset, options)
+                    composition = composition + BarChart(width - 1, height - 1, dataset, options)
                 }
                 case "scale" {
-                    composition = composition + Scale(width, height - 1, dataset, options)
+                    composition = composition + Scale(width - 1, height - 1, dataset, options)
                 }
             }
 

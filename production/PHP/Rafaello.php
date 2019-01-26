@@ -39,9 +39,9 @@ class Rafaello {
 
         $i = 0;
         while (($i < $points)) {
-            $attr->{"x"} = (($attr->{"width"} * $i) + (5 * $i));
+            $attr->{"x"} = ((($attr->{"width"} * $i) + (5 * $i)) + 0.5);
             $attr->{"height"} = round(($height * ($dataset->{"data"}[$i] / $max)), 0);
-            $attr->{"y"} = ($height - $attr->{"height"});
+            $attr->{"y"} = (($height - $attr->{"height"}) + 0.5);
             $component = ($component . self::BuildElement("rect", $attr, ""));
             $i = ($i + 1);
         }
@@ -192,10 +192,10 @@ class Rafaello {
 
             switch ($component->{"type"}) {
                 case "barchart":
-                    $composition = ($composition . self::BarChart($width, ($height - 1), $dataset, $options));
+                    $composition = ($composition . self::BarChart(($width - 1), ($height - 1), $dataset, $options));
                     break;
                 case "scale":
-                    $composition = ($composition . self::Scale($width, ($height - 1), $dataset, $options));
+                    $composition = ($composition . self::Scale(($width - 1), ($height - 1), $dataset, $options));
                     break;
             }
 

@@ -37,9 +37,9 @@
 
         i = 0;
         while ((i < points)) {
-            attr['x'] = ((attr['width'] * i) + (5 * i));
+            attr['x'] = (((attr['width'] * i) + (5 * i)) + 0.5);
             attr['height'] = (Math.round((height * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            attr['y'] = (height - attr['height']);
+            attr['y'] = ((height - attr['height']) + 0.5);
             component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
         }
@@ -190,10 +190,10 @@
 
             switch (component['type']) {
                 case "barchart":
-                    composition = (composition + Rafaello.BarChart(width, (height - 1), dataset, options));
+                    composition = (composition + Rafaello.BarChart((width - 1), (height - 1), dataset, options));
                     break;
                 case "scale":
-                    composition = (composition + Rafaello.Scale(width, (height - 1), dataset, options));
+                    composition = (composition + Rafaello.Scale((width - 1), (height - 1), dataset, options));
                     break;
             }
 
