@@ -248,7 +248,7 @@
             // render component with selected dataset
 
             switch (component['type']) {
-                case "barchart":
+                case "bar":
                     composition = (composition + Rafaello.BarChart((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
                 case "scale":

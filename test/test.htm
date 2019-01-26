@@ -10,7 +10,7 @@
             <tr valign="top">
                 <td><div id="chart1"></div></td>
                 <td width="20px">&nbsp;</td>
-                <td>{"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart"}]}</td>
+                <td>{"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"bar"}]}</td>
             </tr>
         </table>
         <hr>
@@ -18,7 +18,7 @@
             <tr valign="top">
                     <td><div id="chart2"></div></td>
                     <td width="20px">&nbsp;</td>
-                    <td>{"datasets":[{"data":[10,25,50,75,100]},{"data":[100,75,50,25,10]}], "components":[{"type":"barchart","dataset":1}]}</td>
+                    <td>{"datasets":[{"data":[10,25,50,75,100]},{"data":[100,75,50,25,10]}], "components":[{"type":"bar","dataset":1}]}</td>
                 </tr>            
         </table>
         <hr>
@@ -42,7 +42,7 @@
             <tr valign="top">
                 <td><div id="chart5"></div></td>
                 <td width="20px">&nbsp;</td>
-                <td>{"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right"}}]}</td>
+                <td>{"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"bar","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right"}}]}</td>
             </tr>
         </table>                          
     </body>
@@ -51,18 +51,18 @@
     var parser = new DOMParser();
     var dom;
 
-    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart"}]}), "text/xml");
+    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"bar"}]}), "text/xml");
     document.getElementById('chart1').appendChild(dom.documentElement);
 
-    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]},{"data":[100,75,50,25,10]}], "components":[{"type":"barchart","dataset":1}]}), "text/xml");
+    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]},{"data":[100,75,50,25,10]}], "components":[{"type":"bar","dataset":1}]}), "text/xml");
     document.getElementById('chart2').appendChild(dom.documentElement);
 
     dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"scale"}]}), "text/xml");
     document.getElementById('chart3').appendChild(dom.documentElement);
 
-    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart","options":{"x":35}}, {"type":"scale"}]}), "text/xml");
+    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"bar","options":{"x":35}}, {"type":"scale"}]}), "text/xml");
     document.getElementById('chart4').appendChild(dom.documentElement);
 
-    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"barchart","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right"}}]}), "text/xml");
+    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"bar","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right"}}]}), "text/xml");
     document.getElementById('chart5').appendChild(dom.documentElement);
 </script>

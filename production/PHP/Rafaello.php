@@ -250,7 +250,7 @@ class Rafaello {
             // render component with selected dataset
 
             switch ($component->{"type"}) {
-                case "barchart":
+                case "bar":
                     $composition = ($composition . self::BarChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
                     break;
                 case "scale":
