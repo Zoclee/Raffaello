@@ -70,12 +70,15 @@
         var y = 0;
         var step = 0;
         var tmpStr = '';
-        var scaleMargin = 0;
+        var scaleWidth = 0;
 
         // initialize default values
 
         if (!(options.hasOwnProperty('x'))) {
             options['x'] = 0;
+        }
+        if (!(options.hasOwnProperty('align'))) {
+            options['align'] = 'left';
         }
 
         // determine min and max
@@ -97,7 +100,7 @@
 
         // determine scale items
 
-        step = parseInt(Math.floor((max - min) / 10));
+        step = parseInt(Math.floor((max - min) / 5));
         scaleItems.push(max);
         i = (max - step);
         while ((i >= min)) {
@@ -106,37 +109,75 @@
         }
 
         tmpStr = (max).toString();
-        scaleMargin = (tmpStr.length * 7);
+        scaleWidth = (tmpStr.length * 7);
 
-        // draw vertical line
+        if ((options['align'] == 'right')) {
 
-        lineAttr = JSON.parse('{}');
-        lineAttr['x1'] = ((options['x'] + scaleMargin) + 10.5);
-        lineAttr['y1'] = 0;
-        lineAttr['x2'] = ((options['x'] + scaleMargin) + 10.5);
-        lineAttr['y2'] = (height + 1);
-        lineAttr['stroke'] = '#000000';
-        lineAttr['stroke-width'] = 1;
-        component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+            // draw vertical line
 
-        // draw scale items
-
-        textAttr = JSON.parse('{}');
-        textAttr['fill'] = '#000000';
-        textAttr['x'] = options['x'];
-        i = 0;
-        while ((i < scaleItems.length)) {
-            y = (Math.round((height - (((scaleItems[i] - min) / (max - min)) * height)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            lineAttr['x1'] = (options['x'] + scaleMargin);
-            lineAttr['y1'] = (y + 0.5);
-            lineAttr['x2'] = ((options['x'] + scaleMargin) + 10);
-            lineAttr['y2'] = (y + 0.5);
+            lineAttr = JSON.parse('{}');
+            lineAttr['x1'] = (options['x'] + 0.5);
+            lineAttr['y1'] = 0;
+            lineAttr['x2'] = (options['x'] + 0.5);
+            lineAttr['y2'] = (height + 1);
+            lineAttr['stroke'] = '#000000';
+            lineAttr['stroke-width'] = 1;
             component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
-            textAttr['y'] = y;
-            component = (component + Rafaello.BuildElement('text', textAttr, (scaleItems[i]).toString()));
+            // draw scale items
 
-            i = (i + 1);
+            textAttr = JSON.parse('{}');
+            textAttr['fill'] = '#000000';
+            textAttr['x'] = (options['x'] + 14);
+            lineAttr['x1'] = options['x'];
+            lineAttr['x2'] = (options['x'] + 10);
+            i = 0;
+            while ((i < scaleItems.length)) {
+                y = (Math.round((height - (((scaleItems[i] - min) / (max - min)) * height)) * Math.pow(10, 0)) / Math.pow(10, 0));
+
+                lineAttr['y1'] = (y + 0.5);
+                lineAttr['y2'] = (y + 0.5);
+                component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+                textAttr['y'] = y;
+                component = (component + Rafaello.BuildElement('text', textAttr, (scaleItems[i]).toString()));
+
+                i = (i + 1);
+            }
+
+        } else {
+
+            // draw vertical line
+
+            lineAttr = JSON.parse('{}');
+            lineAttr['x1'] = ((options['x'] + scaleWidth) + 10.5);
+            lineAttr['y1'] = 0;
+            lineAttr['x2'] = ((options['x'] + scaleWidth) + 10.5);
+            lineAttr['y2'] = (height + 1);
+            lineAttr['stroke'] = '#000000';
+            lineAttr['stroke-width'] = 1;
+            component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+            // draw scale items
+
+            textAttr = JSON.parse('{}');
+            textAttr['fill'] = '#000000';
+            textAttr['x'] = options['x'];
+            lineAttr['x1'] = (options['x'] + scaleWidth);
+            lineAttr['x2'] = ((options['x'] + scaleWidth) + 10);
+            i = 0;
+            while ((i < scaleItems.length)) {
+                y = (Math.round((height - (((scaleItems[i] - min) / (max - min)) * height)) * Math.pow(10, 0)) / Math.pow(10, 0));
+                lineAttr['y1'] = (y + 0.5);
+                lineAttr['y2'] = (y + 0.5);
+                component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+                textAttr['y'] = y;
+                component = (component + Rafaello.BuildElement('text', textAttr, (scaleItems[i]).toString()));
+
+                i = (i + 1);
+            }
+
         }
 
         return component;
