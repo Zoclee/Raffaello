@@ -3,16 +3,25 @@
 
     // ***** BarChart ********************
 
-    Rafaello.BarChart = function (width, height, dataset, options) {
+    Rafaello.BarChart = function (svgWidth, svgHeight, dataset, options) {
         var component = '';
         var attr = JSON.parse('{}');
         var points = 0;
         var i = 0;
         var max = 0;
 
-        points = Object.keys(dataset['data']).length;
+        // initialize default values
+
+        if (!(options.hasOwnProperty('x'))) {
+            options['x'] = 0;
+        }
+        if (!(options.hasOwnProperty('width'))) {
+            options['width'] = (svgWidth - options['x']);
+        }
 
         // determine maximum height
+
+        points = Object.keys(dataset['data']).length;
 
         max = dataset['data'][0];
         i = 1;
@@ -26,7 +35,7 @@
         // configure styling attributes
 
         attr = JSON.parse('{}');
-        attr['width'] = parseInt(Math.floor((width - ((points - 1) * 5)) / points));
+        attr['width'] = parseInt(Math.floor((options['width'] - ((points - 1) * 5)) / points));
         attr['fill'] = '#00cc00';
         attr['fill-opacity'] = 0.75;
         attr['stroke'] = '#004000';
@@ -37,9 +46,9 @@
 
         i = 0;
         while ((i < points)) {
-            attr['x'] = (((attr['width'] * i) + (5 * i)) + 0.5);
-            attr['height'] = (Math.round((height * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            attr['y'] = ((height - attr['height']) + 0.5);
+            attr['x'] = (((options['x'] + (attr['width'] * i)) + (5 * i)) + 0.5);
+            attr['height'] = (Math.round((svgHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            attr['y'] = ((svgHeight - attr['height']) + 0.5);
             component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
         }
@@ -63,9 +72,15 @@
         var tmpStr = '';
         var scaleMargin = 0;
 
-        points = Object.keys(dataset['data']).length;
+        // initialize default values
+
+        if (!(options.hasOwnProperty('x'))) {
+            options['x'] = 0;
+        }
 
         // determine min and max
+
+        points = Object.keys(dataset['data']).length;
 
         min = dataset['data'][0];
         max = dataset['data'][0];
@@ -96,9 +111,9 @@
         // draw vertical line
 
         lineAttr = JSON.parse('{}');
-        lineAttr['x1'] = (scaleMargin + 10.5);
+        lineAttr['x1'] = ((options['x'] + scaleMargin) + 10.5);
         lineAttr['y1'] = 0;
-        lineAttr['x2'] = (scaleMargin + 10.5);
+        lineAttr['x2'] = ((options['x'] + scaleMargin) + 10.5);
         lineAttr['y2'] = (height + 1);
         lineAttr['stroke'] = '#000000';
         lineAttr['stroke-width'] = 1;
@@ -108,13 +123,13 @@
 
         textAttr = JSON.parse('{}');
         textAttr['fill'] = '#000000';
-        textAttr['x'] = 0;
+        textAttr['x'] = options['x'];
         i = 0;
         while ((i < scaleItems.length)) {
             y = (Math.round((height - (((scaleItems[i] - min) / (max - min)) * height)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            lineAttr['x1'] = scaleMargin;
+            lineAttr['x1'] = (options['x'] + scaleMargin);
             lineAttr['y1'] = (y + 0.5);
-            lineAttr['x2'] = (scaleMargin + 10);
+            lineAttr['x2'] = ((options['x'] + scaleMargin) + 10);
             lineAttr['y2'] = (y + 0.5);
             component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
@@ -155,7 +170,7 @@
 
     // ***** Render ********************
 
-    Rafaello.Render = function (width, height, object) {
+    Rafaello.Render = function (svgWidth, svgHeight, object) {
         var composition = '';
         var dataset = JSON.parse('{}');
         var options = JSON.parse('{}');
@@ -165,8 +180,8 @@
         var datasetIndex = 0;
 
         composition = '<svg ';
-        composition = (((composition + " width=\"") + width) + "\"");
-        composition = (((composition + " height=\"") + height) + "\"");
+        composition = (((composition + " width=\"") + svgWidth) + "\"");
+        composition = (((composition + " height=\"") + svgHeight) + "\"");
         composition = (composition + " xmlns=\"http://www.w3.org/2000/svg\">");
 
         componentCount = Object.keys(object['components']).length;
@@ -185,15 +200,18 @@
             dataset = object['datasets'][datasetIndex];
 
             options = JSON.parse('{}');
+            if (component.hasOwnProperty('options')) {
+                options = component['options'];
+            }
 
             // render component with selected dataset
 
             switch (component['type']) {
                 case "barchart":
-                    composition = (composition + Rafaello.BarChart((width - 1), (height - 1), dataset, options));
+                    composition = (composition + Rafaello.BarChart((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
                 case "scale":
-                    composition = (composition + Rafaello.Scale((width - 1), (height - 1), dataset, options));
+                    composition = (composition + Rafaello.Scale((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
             }
 
