@@ -5,59 +5,25 @@ class Rafaello {
 
     // ***** BarChart ********************
 
-    public static function BarChart($width, $height, $dataSet) {
+    public static function BarChart($width, $height, $dataset, $options) {
         $component = "";
         $attr = json_decode("{}");
         $points = 0;
         $i = 0;
         $max = 0;
 
-        $points = count($dataSet->{"data"});
-
-        // determine scale margin
-
-        /* maxScaleLen = 9
-        scaleMargin = maxScaleLen * 9
-
-        if position = "right" {
-            barsOffset = 0
-            yAxisOffset = width - scaleMargin + 5
-            scaleOffset = yAxisOffset + 5    
-        } else {
-            barsOffset = scaleMargin            
-            yAxisOffset = barsOffset - 5
-            scaleOffset = 0
-        }*/
+        $points = count($dataset->{"data"});
 
         // determine maximum height
 
-        $max = $dataSet->{"data"}[0];
+        $max = $dataset->{"data"}[0];
         $i = 1;
         while (($i < $points)) {
-            if (($dataSet->{"data"}[$i] > $max)) {
-                $max = $dataSet->{"data"}[$i];
+            if (($dataset->{"data"}[$i] > $max)) {
+                $max = $dataset->{"data"}[$i];
             }
             $i = ($i + 1);
         }
-
-        // y-axis
-
-        /*attr = ParseJSON("{}")
-        attr["x1"] = yAxisOffset
-        attr["y1"] = 0
-        attr["x2"] = yAxisOffset
-        attr["y2"] = height
-        attr["stroke"] = "#000000"
-        attr["stroke-width"] = 1
-        component = component + BuildElement("line", attr, "")
-
-        // scale values
-
-        attr = ParseJSON("{}")
-        attr["x"] = scaleOffset
-        attr["y"] = 100
-        attr["fill"] = "#000000"    
-        component = component + BuildElement("text", attr, "Test12345")*/
 
         // configure styling attributes
 
@@ -74,7 +40,7 @@ class Rafaello {
         $i = 0;
         while (($i < $points)) {
             $attr->{"x"} = (($attr->{"width"} * $i) + (5 * $i));
-            $attr->{"height"} = round(($height * ($dataSet->{"data"}[$i] / $max)), 0);
+            $attr->{"height"} = round(($height * ($dataset->{"data"}[$i] / $max)), 0);
             $attr->{"y"} = ($height - $attr->{"height"});
             $component = ($component . self::BuildElement("rect", $attr, ""));
             $i = ($i + 1);
@@ -82,6 +48,90 @@ class Rafaello {
 
         return $component;
     }
+
+    // ***** Scale ********************
+
+    public static function Scale($width, $height, $dataset, $options) {
+        $component = "";
+        $lineAttr = json_decode("{}");
+        $textAttr = json_decode("{}");
+        $scaleItems = array();
+        $i = 0;
+        $min = 0;
+        $max = 0;
+        $points = 0;
+        $y = 0;
+        $step = 0;
+        $tmpStr = "";
+        $scaleMargin = 0;
+
+        $points = count($dataset->{"data"});
+
+        // determine min and max
+
+        $min = $dataset->{"data"}[0];
+        $max = $dataset->{"data"}[0];
+        $i = 1;
+        while (($i < $points)) {
+            if (($dataset->{"data"}[$i] < $min)) {
+                $min = $dataset->{"data"}[$i];
+            }
+            if (($dataset->{"data"}[$i] > $max)) {
+                $max = $dataset->{"data"}[$i];
+            }
+            $i = ($i + 1);
+        }
+
+        // determine scale items
+
+        $step = intval(floor(($max - $min) / 10));
+        $scaleItems[] = $max;
+        $i = ($max - $step);
+        while (($i >= $min)) {
+            $scaleItems[] = $i;
+            $i = ($i - $step);
+        }
+
+        $tmpStr = (string)($max);
+        $scaleMargin = (strlen($tmpStr) * 7);
+
+        // draw vertical line
+
+        $lineAttr = json_decode("{}");
+        $lineAttr->{"x1"} = ($scaleMargin + 10.5);
+        $lineAttr->{"y1"} = 0;
+        $lineAttr->{"x2"} = ($scaleMargin + 10.5);
+        $lineAttr->{"y2"} = ($height + 1);
+        $lineAttr->{"stroke"} = "#000000";
+        $lineAttr->{"stroke-width"} = 1;
+        $component = ($component . self::BuildElement("line", $lineAttr, ""));
+
+        // draw scale items
+
+        $textAttr = json_decode("{}");
+        $textAttr->{"fill"} = "#000000";
+        $textAttr->{"x"} = 0;
+        $i = 0;
+        while (($i < count($scaleItems))) {
+            $y = round(($height - ((($scaleItems[$i] - $min) / ($max - $min)) * $height)), 0);
+            $lineAttr->{"x1"} = $scaleMargin;
+            $lineAttr->{"y1"} = ($y + 0.5);
+            $lineAttr->{"x2"} = ($scaleMargin + 10);
+            $lineAttr->{"y2"} = ($y + 0.5);
+            $component = ($component . self::BuildElement("line", $lineAttr, ""));
+
+            $textAttr->{"y"} = $y;
+            $component = ($component . self::BuildElement("text", $textAttr, (string)($scaleItems[$i])));
+
+            $i = ($i + 1);
+        }
+
+        return $component;
+    }
+
+    // ===========================================================================
+    //   HELPER METHODS
+    // ===========================================================================
 
     // ***** BuildElement ********************
 
@@ -109,10 +159,12 @@ class Rafaello {
 
     public static function Render($width, $height, $object) {
         $composition = "";
-        $dataSet = json_decode("{}");
+        $dataset = json_decode("{}");
+        $options = json_decode("{}");
         $i = 0;
         $componentCount = 0;
         $component = json_decode("{}");
+        $datasetIndex = 0;
 
         $composition = "<svg ";
         $composition = ((($composition . " width=\"") . $width) . "\"");
@@ -122,11 +174,28 @@ class Rafaello {
         $componentCount = count($object->{"components"});
         $i = 0;
         while (($i < $componentCount)) {
+
             $component = $object->{"components"}[$i];
+
+            // get dataset
+
+            if (property_exists($component, "dataset")) {
+                $datasetIndex = $component->{"dataset"};
+            } else {
+                $datasetIndex = 0;
+            }
+            $dataset = $object->{"datasets"}[$datasetIndex];
+
+            $options = json_decode("{}");
+
+            // render component with selected dataset
+
             switch ($component->{"type"}) {
                 case "barchart":
-                    $dataSet = $object->{"datasets"}[$component->{"dataset"}];
-                    $composition = ($composition . self::BarChart($width, $height, $dataSet));
+                    $composition = ($composition . self::BarChart($width, ($height - 1), $dataset, $options));
+                    break;
+                case "scale":
+                    $composition = ($composition . self::Scale($width, ($height - 1), $dataset, $options));
                     break;
             }
 

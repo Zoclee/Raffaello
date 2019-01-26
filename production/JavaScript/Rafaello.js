@@ -3,7 +3,7 @@
 
     // ***** BarChart ********************
 
-    Rafaello.BarChart = function (width, height, dataset) {
+    Rafaello.BarChart = function (width, height, dataset, options) {
         var component = '';
         var attr = JSON.parse('{}');
         var points = 0;
@@ -11,21 +11,6 @@
         var max = 0;
 
         points = Object.keys(dataset['data']).length;
-
-        // determine scale margin
-
-        /* maxScaleLen = 9
-        scaleMargin = maxScaleLen * 9
-
-        if position = "right" {
-            barsOffset = 0
-            yAxisOffset = width - scaleMargin + 5
-            scaleOffset = yAxisOffset + 5    
-        } else {
-            barsOffset = scaleMargin            
-            yAxisOffset = barsOffset - 5
-            scaleOffset = 0
-        }*/
 
         // determine maximum height
 
@@ -37,25 +22,6 @@
             }
             i = (i + 1);
         }
-
-        // y-axis
-
-        /*attr = ParseJSON("{}")
-        attr["x1"] = yAxisOffset
-        attr["y1"] = 0
-        attr["x2"] = yAxisOffset
-        attr["y2"] = height
-        attr["stroke"] = "#000000"
-        attr["stroke-width"] = 1
-        component = component + BuildElement("line", attr, "")
-
-        // scale values
-
-        attr = ParseJSON("{}")
-        attr["x"] = scaleOffset
-        attr["y"] = 100
-        attr["fill"] = "#000000"    
-        component = component + BuildElement("text", attr, "Test12345")*/
 
         // configure styling attributes
 
@@ -80,6 +46,90 @@
 
         return component;
     }
+
+    // ***** Scale ********************
+
+    Rafaello.Scale = function (width, height, dataset, options) {
+        var component = '';
+        var lineAttr = JSON.parse('{}');
+        var textAttr = JSON.parse('{}');
+        var scaleItems = [];
+        var i = 0;
+        var min = 0;
+        var max = 0;
+        var points = 0;
+        var y = 0;
+        var step = 0;
+        var tmpStr = '';
+        var scaleMargin = 0;
+
+        points = Object.keys(dataset['data']).length;
+
+        // determine min and max
+
+        min = dataset['data'][0];
+        max = dataset['data'][0];
+        i = 1;
+        while ((i < points)) {
+            if ((dataset['data'][i] < min)) {
+                min = dataset['data'][i];
+            }
+            if ((dataset['data'][i] > max)) {
+                max = dataset['data'][i];
+            }
+            i = (i + 1);
+        }
+
+        // determine scale items
+
+        step = parseInt(Math.floor((max - min) / 10));
+        scaleItems.push(max);
+        i = (max - step);
+        while ((i >= min)) {
+            scaleItems.push(i);
+            i = (i - step);
+        }
+
+        tmpStr = (max).toString();
+        scaleMargin = (tmpStr.length * 7);
+
+        // draw vertical line
+
+        lineAttr = JSON.parse('{}');
+        lineAttr['x1'] = (scaleMargin + 10.5);
+        lineAttr['y1'] = 0;
+        lineAttr['x2'] = (scaleMargin + 10.5);
+        lineAttr['y2'] = (height + 1);
+        lineAttr['stroke'] = '#000000';
+        lineAttr['stroke-width'] = 1;
+        component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+        // draw scale items
+
+        textAttr = JSON.parse('{}');
+        textAttr['fill'] = '#000000';
+        textAttr['x'] = 0;
+        i = 0;
+        while ((i < scaleItems.length)) {
+            y = (Math.round((height - (((scaleItems[i] - min) / (max - min)) * height)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            lineAttr['x1'] = scaleMargin;
+            lineAttr['y1'] = (y + 0.5);
+            lineAttr['x2'] = (scaleMargin + 10);
+            lineAttr['y2'] = (y + 0.5);
+            component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+            textAttr['y'] = y;
+            component = (component + Rafaello.BuildElement('text', textAttr, (scaleItems[i]).toString()));
+
+            i = (i + 1);
+        }
+
+        return component;
+    }
+
+    // ===========================================================================
+    //   HELPER METHODS
+    // ===========================================================================
 
     // ***** BuildElement ********************
 
@@ -108,6 +158,7 @@
     Rafaello.Render = function (width, height, object) {
         var composition = '';
         var dataset = JSON.parse('{}');
+        var options = JSON.parse('{}');
         var i = 0;
         var componentCount = 0;
         var component = JSON.parse('{}');
@@ -121,16 +172,28 @@
         componentCount = Object.keys(object['components']).length;
         i = 0;
         while ((i < componentCount)) {
+
             component = object['components'][i];
+
+            // get dataset
+
+            if (component.hasOwnProperty('dataset')) {
+                datasetIndex = component['dataset'];
+            } else {
+                datasetIndex = 0;
+            }
+            dataset = object['datasets'][datasetIndex];
+
+            options = JSON.parse('{}');
+
+            // render component with selected dataset
+
             switch (component['type']) {
                 case "barchart":
-                    if (component.hasOwnProperty('dataset')) {
-                        datasetIndex = component['dataset'];
-                    } else {
-                        datasetIndex = 0;
-                    }
-                    dataset = object['datasets'][datasetIndex];
-                    composition = (composition + Rafaello.BarChart(width, height, dataset));
+                    composition = (composition + Rafaello.BarChart(width, (height - 1), dataset, options));
+                    break;
+                case "scale":
+                    composition = (composition + Rafaello.Scale(width, (height - 1), dataset, options));
                     break;
             }
 
