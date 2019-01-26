@@ -3,14 +3,14 @@
 
     // ***** BarChart ********************
 
-    Rafaello.BarChart = function (width, height, dataSet) {
+    Rafaello.BarChart = function (width, height, dataset) {
         var component = '';
         var attr = JSON.parse('{}');
         var points = 0;
         var i = 0;
         var max = 0;
 
-        points = Object.keys(dataSet['data']).length;
+        points = Object.keys(dataset['data']).length;
 
         // determine scale margin
 
@@ -29,11 +29,11 @@
 
         // determine maximum height
 
-        max = dataSet['data'][0];
+        max = dataset['data'][0];
         i = 1;
         while ((i < points)) {
-            if ((dataSet['data'][i] > max)) {
-                max = dataSet['data'][i];
+            if ((dataset['data'][i] > max)) {
+                max = dataset['data'][i];
             }
             i = (i + 1);
         }
@@ -72,7 +72,7 @@
         i = 0;
         while ((i < points)) {
             attr['x'] = ((attr['width'] * i) + (5 * i));
-            attr['height'] = (Math.round((height * (dataSet['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            attr['height'] = (Math.round((height * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
             attr['y'] = (height - attr['height']);
             component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
@@ -107,10 +107,11 @@
 
     Rafaello.Render = function (width, height, object) {
         var composition = '';
-        var dataSet = JSON.parse('{}');
+        var dataset = JSON.parse('{}');
         var i = 0;
         var componentCount = 0;
         var component = JSON.parse('{}');
+        var datasetIndex = 0;
 
         composition = '<svg ';
         composition = (((composition + " width=\"") + width) + "\"");
@@ -123,8 +124,13 @@
             component = object['components'][i];
             switch (component['type']) {
                 case "barchart":
-                    dataSet = object['datasets'][component['dataset']];
-                    composition = (composition + Rafaello.BarChart(width, height, dataSet));
+                    if (component.hasOwnProperty('dataset')) {
+                        datasetIndex = component['dataset'];
+                    } else {
+                        datasetIndex = 0;
+                    }
+                    dataset = object['datasets'][datasetIndex];
+                    composition = (composition + Rafaello.BarChart(width, height, dataset));
                     break;
             }
 

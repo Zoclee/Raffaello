@@ -2,14 +2,14 @@ module Rafaello {
     
     // ***** BarChart ********************
 
-    method string BarChart(int32 width, int32 height, json dataSet) {
+    method string BarChart(int32 width, int32 height, json dataset) {
         string component
         json attr = ParseJSON("{}")
         int32 points
         int32 i 
         int32 max
 
-        points = count(dataSet["data"])
+        points = count(dataset["data"])
 
         // determine scale margin
 
@@ -28,11 +28,11 @@ module Rafaello {
 
         // determine maximum height
 
-        max = dataSet["data"][0]
+        max = dataset["data"][0]
         i = 1
         while i < points {
-            if dataSet["data"][i] > max {
-               max = dataSet["data"][i]
+            if dataset["data"][i] > max {
+               max = dataset["data"][i]
             }
             i = i + 1
         }
@@ -71,7 +71,7 @@ module Rafaello {
         i = 0
         while i < points {
             attr["x"] =  attr["width"] * i + (5 * i)
-            attr["height"] = Round( height * (dataSet["data"][i] / max), 0 )
+            attr["height"] = Round( height * (dataset["data"][i] / max), 0 )
             attr["y"] = height - attr["height"]
             component = component + BuildElement("rect", attr, "")
             i = i + 1
@@ -106,10 +106,11 @@ module Rafaello {
 
     method string Render(int32 width, int32 height, json object) {
         string composition
-        json dataSet
+        json dataset
         int32 i
         int32 componentCount
         json component
+        int32 datasetIndex
 
         composition = "<svg "
         composition = composition + " width=\"" + width + "\""
@@ -122,7 +123,12 @@ module Rafaello {
             component = object["components"][i]
             switch component["type"] {
                 case "barchart" {
-                    dataSet = object["datasets"][component["dataset"]]
+                    if component.HasKey("dataset") {
+                        datasetIndex = component["dataset"]
+                    } else {
+                        datasetIndex = 0   
+                    }                    
+                    dataset = object["datasets"][datasetIndex]
                     composition = composition + BarChart(width, height, dataSet)
                 }
             }
