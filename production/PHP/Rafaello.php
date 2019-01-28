@@ -11,6 +11,7 @@ class Rafaello {
         $points = 0;
         $i = 0;
         $max = 0;
+        $renderHeight = ($svgHeight - 10);
 
         // initialize default values
 
@@ -50,8 +51,8 @@ class Rafaello {
         $i = 0;
         while (($i < $points)) {
             $attr->{"x"} = ((($options->{"x"} + ($attr->{"width"} * $i)) + (5 * $i)) + 0.5);
-            $attr->{"height"} = round(($svgHeight * ($dataset->{"data"}[$i] / $max)), 0);
-            $attr->{"y"} = (($svgHeight - $attr->{"height"}) + 0.5);
+            $attr->{"height"} = round(($renderHeight * ($dataset->{"data"}[$i] / $max)), 0);
+            $attr->{"y"} = (((10 + $renderHeight) - $attr->{"height"}) + 0.5);
             $component = ($component . self::BuildElement("rect", $attr, ""));
             $i = ($i + 1);
         }
@@ -70,6 +71,7 @@ class Rafaello {
         $path = "";
         $pointWidth = 0;
         $tmpHeight = 0;
+        $renderHeight = ($svgHeight - 10);
 
         // initialize default values
 
@@ -109,8 +111,8 @@ class Rafaello {
         $i = 0;
         while (($i < $points)) {
             $path = ($path . (string)((((($options->{"x"} + ($pointWidth * $i)) + ($pointWidth * 0.5)) + (5 * $i)) + 0.5)));
-            $tmpHeight = round(($svgHeight * ($dataset->{"data"}[$i] / $max)), 0);
-            $path = (($path . " ") . (string)((($svgHeight - $tmpHeight) + 0.5)));
+            $tmpHeight = round(($renderHeight * ($dataset->{"data"}[$i] / $max)), 0);
+            $path = (($path . " ") . (string)((((10 + $renderHeight) - $tmpHeight) + 0.5)));
             $i = ($i + 1);
             if (($i < $points)) {
                 $path = ($path . " ");
@@ -126,7 +128,7 @@ class Rafaello {
 
     // ***** Scale ********************
 
-    public static function Scale($width, $height, $dataset, $options) {
+    public static function Scale($svgWidth, $svgHeight, $dataset, $options) {
         $component = "";
         $lineAttr = json_decode("{}");
         $textAttr = json_decode("{}");
@@ -139,6 +141,7 @@ class Rafaello {
         $step = 0;
         $tmpStr = "";
         $scaleWidth = 0;
+        $renderHeight = ($svgHeight - 10);
 
         // initialize default values
 
@@ -176,29 +179,31 @@ class Rafaello {
         $tmpStr = (string)($max);
         $scaleWidth = (strlen($tmpStr) * 7);
 
+        $lineAttr = json_decode("{}");
+        $lineAttr->{"y1"} = 10;
+        $lineAttr->{"y2"} = ($svgHeight + 1);
+        $lineAttr->{"stroke"} = "#000000";
+        $lineAttr->{"stroke-width"} = 1;
+
         if (($options->{"align"} == "right")) {
 
             // draw vertical line
 
-            $lineAttr = json_decode("{}");
             $lineAttr->{"x1"} = ($options->{"x"} + 0.5);
-            $lineAttr->{"y1"} = 0;
             $lineAttr->{"x2"} = ($options->{"x"} + 0.5);
-            $lineAttr->{"y2"} = ($height + 1);
-            $lineAttr->{"stroke"} = "#000000";
-            $lineAttr->{"stroke-width"} = 1;
+
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             // draw scale items
 
             $textAttr = json_decode("{}");
             $textAttr->{"fill"} = "#000000";
-            $textAttr->{"x"} = ($options->{"x"} + 14);
+            $textAttr->{"x"} = ($options->{"x"} + 9);
             $lineAttr->{"x1"} = $options->{"x"};
-            $lineAttr->{"x2"} = ($options->{"x"} + 10);
+            $lineAttr->{"x2"} = ($options->{"x"} + 5);
             $i = 0;
             while (($i < count($scaleItems))) {
-                $y = round(($height - ((($scaleItems[$i] - $min) / ($max - $min)) * $height)), 0);
+                $y = (10 + round(($renderHeight - ((($scaleItems[$i] - $min) / ($max - $min)) * $renderHeight)), 0));
 
                 $lineAttr->{"y1"} = ($y + 0.5);
                 $lineAttr->{"y2"} = ($y + 0.5);
@@ -214,13 +219,8 @@ class Rafaello {
 
             // draw vertical line
 
-            $lineAttr = json_decode("{}");
             $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 10.5);
-            $lineAttr->{"y1"} = 0;
             $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10.5);
-            $lineAttr->{"y2"} = ($height + 1);
-            $lineAttr->{"stroke"} = "#000000";
-            $lineAttr->{"stroke-width"} = 1;
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             // draw scale items
@@ -228,11 +228,11 @@ class Rafaello {
             $textAttr = json_decode("{}");
             $textAttr->{"fill"} = "#000000";
             $textAttr->{"x"} = $options->{"x"};
-            $lineAttr->{"x1"} = ($options->{"x"} + $scaleWidth);
+            $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 5);
             $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10);
             $i = 0;
             while (($i < count($scaleItems))) {
-                $y = round(($height - ((($scaleItems[$i] - $min) / ($max - $min)) * $height)), 0);
+                $y = (10 + round(($renderHeight - ((($scaleItems[$i] - $min) / ($max - $min)) * $renderHeight)), 0));
                 $lineAttr->{"y1"} = ($y + 0.5);
                 $lineAttr->{"y2"} = ($y + 0.5);
                 $component = ($component . self::BuildElement("line", $lineAttr, ""));
