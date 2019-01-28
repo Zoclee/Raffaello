@@ -151,22 +151,15 @@
 
         points = Object.keys(dataset['data']).length;
 
-        //min = dataset["data"][0]
         min = 0;
         max = dataset['data'][0];
         i = 1;
         while ((i < points)) {
-            //if dataset["data"][i] < min {
-            //   min = dataset["data"][i]
-            //}
             if ((dataset['data'][i] > max)) {
                 max = dataset['data'][i];
             }
             i = (i + 1);
         }
-        //if min = max {
-        //    min = 0
-        //}
 
         // determine scale items
 
