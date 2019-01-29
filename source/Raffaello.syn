@@ -53,6 +53,72 @@ module Rafaello {
         return component
     }
 
+    // ***** CandlestickChart ********************
+
+    method string CandlestickChart(int32 svgWidth, int32 svgHeight, json dataset, json options) {
+        string component
+        json attr
+        int32 points
+        int32 i 
+        int32 max
+        int32 min
+        int32 renderHeight = svgHeight - 10
+
+        // initialize default values
+
+        if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
+
+        // determine maximum height
+
+        points = count(dataset["data"]) 
+
+        max = dataset["data"][0]
+        min = 0
+        i = 1
+        while i < points {
+            if dataset["data"][i] > max {
+               max = dataset["data"][i]
+            }
+            //if dataset["data"][i] < min {
+            //   min = dataset["data"][i]
+            //} 
+            i = i + 1
+        }
+
+        // configure styling attributes
+
+        attr = ParseJSON("{}")
+        attr["width"] = (options["width"] - ((points \ 4) - 1) * 5) \ (points \ 4)
+        attr["fill"] = "#00cc00"
+        attr["fill-opacity"] = 0.75
+        attr["stroke"] = "#004000"
+        attr["stroke-opacity"] = 0.75
+        attr["stroke-width"] = 1
+
+        // create bars
+
+        i = 0
+        while i < points {
+            attr["x"] = options["x"] + attr["width"] * (i \ 4) + (5 * (i \ 4)) + 0.5
+            if (dataset["data"][i] < dataset["data"][i + 3]) {
+                attr["y"] = 10 + renderHeight - Round( renderHeight * (dataset["data"][i + 3] / max), 0 ) + 0.5
+                attr["height"] = renderHeight * (dataset["data"][i + 3] - dataset["data"][i]) / max
+                attr["fill"] = "#00cc00"
+                attr["stroke"] = "#004000"            
+            } else {
+                attr["y"] = 10 + renderHeight - Round( renderHeight * (dataset["data"][i] / max), 0 ) + 0.5
+                attr["height"] = renderHeight * (dataset["data"][i] - dataset["data"][i + 3]) / max     
+                attr["fill"] = "#cc0000"
+                attr["stroke"] = "#400000"             
+            }
+            component = component + BuildElement("rect", attr, "")
+            i = i + 4
+        }
+
+        return component
+    }
+
    // ***** LineChart ********************
 
     method string LineChart(int32 svgWidth, int32 svgHeight, json dataset, json options) {
@@ -298,6 +364,9 @@ module Rafaello {
             // render component with selected dataset
 
             switch component["type"] {
+                case "candlestick" {                                       
+                    composition = composition + CandlestickChart(svgWidth - 1, svgHeight - 1, dataset, options)
+                }                
                 case "bar" {                                       
                     composition = composition + BarChart(svgWidth - 1, svgHeight - 1, dataset, options)
                 }

@@ -58,6 +58,76 @@
         return component;
     }
 
+    // ***** CandlestickChart ********************
+
+    Rafaello.CandlestickChart = function (svgWidth, svgHeight, dataset, options) {
+        var component = '';
+        var attr = JSON.parse('{}');
+        var points = 0;
+        var i = 0;
+        var max = 0;
+        var min = 0;
+        var renderHeight = (svgHeight - 10);
+
+        // initialize default values
+
+        if (!(options.hasOwnProperty('x'))) {
+            options['x'] = 0;
+        }
+        if (!(options.hasOwnProperty('width'))) {
+            options['width'] = (svgWidth - options['x']);
+        }
+
+        // determine maximum height
+
+        points = Object.keys(dataset['data']).length;
+
+        max = dataset['data'][0];
+        min = 0;
+        i = 1;
+        while ((i < points)) {
+            if ((dataset['data'][i] > max)) {
+                max = dataset['data'][i];
+            }
+            //if dataset["data"][i] < min {
+            //   min = dataset["data"][i]
+            //} 
+            i = (i + 1);
+        }
+
+        // configure styling attributes
+
+        attr = JSON.parse('{}');
+        attr['width'] = parseInt(Math.floor((options['width'] - ((parseInt(Math.floor(points / 4)) - 1) * 5)) / parseInt(Math.floor(points / 4))));
+        attr['fill'] = '#00cc00';
+        attr['fill-opacity'] = 0.75;
+        attr['stroke'] = '#004000';
+        attr['stroke-opacity'] = 0.75;
+        attr['stroke-width'] = 1;
+
+        // create bars
+
+        i = 0;
+        while ((i < points)) {
+            attr['x'] = (((options['x'] + (attr['width'] * parseInt(Math.floor(i / 4)))) + (5 * parseInt(Math.floor(i / 4)))) + 0.5);
+            if ((dataset['data'][i] < dataset['data'][(i + 3)])) {
+                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * (dataset['data'][(i + 3)] / max)) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+                attr['height'] = (renderHeight * ((dataset['data'][(i + 3)] - dataset['data'][i]) / max));
+                attr['fill'] = '#00cc00';
+                attr['stroke'] = '#004000';
+            } else {
+                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+                attr['height'] = (renderHeight * ((dataset['data'][i] - dataset['data'][(i + 3)]) / max));
+                attr['fill'] = '#cc0000';
+                attr['stroke'] = '#400000';
+            }
+            component = (component + Rafaello.BuildElement('rect', attr, ''));
+            i = (i + 4);
+        }
+
+        return component;
+    }
+
     // ***** LineChart ********************
 
     Rafaello.LineChart = function (svgWidth, svgHeight, dataset, options) {
@@ -311,6 +381,9 @@
             // render component with selected dataset
 
             switch (component['type']) {
+                case "candlestick":
+                    composition = (composition + Rafaello.CandlestickChart((svgWidth - 1), (svgHeight - 1), dataset, options));
+                    break;
                 case "bar":
                     composition = (composition + Rafaello.BarChart((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
