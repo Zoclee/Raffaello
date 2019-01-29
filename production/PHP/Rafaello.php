@@ -244,12 +244,15 @@ class Rafaello {
         if (!(property_exists($options, "align"))) {
             $options->{"align"} = "left";
         }
+        if (!(property_exists($options, "min"))) {
+            $options->{"min"} = 0;
+        }
 
         // determine min and max
 
         $points = count($dataset->{"data"});
 
-        $min = 0;
+        $min = $options->{"min"};
         $max = $dataset->{"data"}[0];
         $i = 1;
         while (($i < $points)) {

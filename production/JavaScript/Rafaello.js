@@ -242,12 +242,15 @@
         if (!(options.hasOwnProperty('align'))) {
             options['align'] = 'left';
         }
+        if (!(options.hasOwnProperty('min'))) {
+            options['min'] = 0;
+        }
 
         // determine min and max
 
         points = Object.keys(dataset['data']).length;
 
-        min = 0;
+        min = options['min'];
         max = dataset['data'][0];
         i = 1;
         while ((i < points)) {

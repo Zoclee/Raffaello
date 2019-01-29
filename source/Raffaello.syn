@@ -225,12 +225,13 @@ module Rafaello {
 
         if not options.HasKey("x") { options["x"] = 0 }
         if not options.HasKey("align") { options["align"] = "left" }
+        if not options.HasKey("min") { options["min"] = 0 }
 
         // determine min and max
 
         points = count(dataset["data"])
 
-        min = 0
+        min = options["min"]
         max = dataset["data"][0]
         i = 1
         while i < points {
