@@ -33,7 +33,6 @@
             i = (i + 1);
         }
 
-
         // configure styling attributes
 
         attr = JSON.parse('{}');
@@ -63,6 +62,7 @@
     Rafaello.CandlestickChart = function (svgWidth, svgHeight, dataset, options) {
         var component = '';
         var attr = JSON.parse('{}');
+        var lineAttr = JSON.parse('{}');
         var points = 0;
         var i = 0;
         var max = 0;
@@ -83,15 +83,15 @@
         points = Object.keys(dataset['data']).length;
 
         max = dataset['data'][0];
-        min = 0;
+        min = dataset['data'][0];
         i = 1;
         while ((i < points)) {
             if ((dataset['data'][i] > max)) {
                 max = dataset['data'][i];
             }
-            //if dataset["data"][i] < min {
-            //   min = dataset["data"][i]
-            //} 
+            if ((dataset['data'][i] < min)) {
+                min = dataset['data'][i];
+            }
             i = (i + 1);
         }
 
@@ -105,23 +105,46 @@
         attr['stroke-opacity'] = 0.75;
         attr['stroke-width'] = 1;
 
+        lineAttr = JSON.parse('{}');
+        lineAttr['stroke'] = '#000000';
+        lineAttr['stroke-width'] = 1;
+
         // create bars
 
         i = 0;
         while ((i < points)) {
             attr['x'] = (((options['x'] + (attr['width'] * parseInt(Math.floor(i / 4)))) + (5 * parseInt(Math.floor(i / 4)))) + 0.5);
+
+            // lines
+
+            lineAttr['x1'] = (attr['x'] + parseInt(Math.floor(attr['width'] / 2)));
+            lineAttr['x2'] = lineAttr['x1'];
+
+            // body
+
             if ((dataset['data'][i] < dataset['data'][(i + 3)])) {
-                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * (dataset['data'][(i + 3)] / max)) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
-                attr['height'] = (renderHeight * ((dataset['data'][(i + 3)] - dataset['data'][i]) / max));
+                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * ((dataset['data'][(i + 3)] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+                attr['height'] = (renderHeight * ((dataset['data'][(i + 3)] - dataset['data'][i]) / (max - min)));
                 attr['fill'] = '#00cc00';
                 attr['stroke'] = '#004000';
             } else {
-                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
-                attr['height'] = (renderHeight * ((dataset['data'][i] - dataset['data'][(i + 3)]) / max));
+                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * ((dataset['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+                attr['height'] = (renderHeight * ((dataset['data'][i] - dataset['data'][(i + 3)]) / (max - min)));
                 attr['fill'] = '#cc0000';
                 attr['stroke'] = '#400000';
             }
+
+            lineAttr['y1'] = (((10 + renderHeight) - (Math.round((renderHeight * ((dataset['data'][(i + 1)] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+            lineAttr['y2'] = attr['y'];
+            component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+            lineAttr['y1'] = (attr['y'] + attr['height']);
+            lineAttr['y2'] = (((10 + renderHeight) - (Math.round((renderHeight * ((dataset['data'][(i + 2)] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+            component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
             component = (component + Rafaello.BuildElement('rect', attr, ''));
+
+
             i = (i + 4);
         }
 
