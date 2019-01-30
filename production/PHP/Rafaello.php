@@ -61,7 +61,7 @@ class Rafaello {
 
     // ***** CandlestickChart ********************
 
-    public static function CandlestickChart($svgWidth, $svgHeight, $dataset, $options) {
+    public static function CandlestickChart($svgWidth, $svgHeight, $datasets, $options) {
         $component = "";
         $attr = json_decode("{}");
         $lineAttr = json_decode("{}");
@@ -82,17 +82,35 @@ class Rafaello {
 
         // determine maximum height
 
-        $points = count($dataset->{"data"});
+        $points = count((array)$datasets[0]->{"data"});
 
-        $max = $dataset->{"data"}[0];
-        $min = $dataset->{"data"}[0];
-        $i = 1;
+        $max = $datasets[0]->{"data"}[0];
+        $min = $datasets[0]->{"data"}[0];
+        $i = 0;
         while (($i < $points)) {
-            if (($dataset->{"data"}[$i] > $max)) {
-                $max = $dataset->{"data"}[$i];
+            if (($datasets[0]->{"data"}[$i] > $max)) {
+                $max = $datasets[0]->{"data"}[$i];
             }
-            if (($dataset->{"data"}[$i] < $min)) {
-                $min = $dataset->{"data"}[$i];
+            if (($datasets[1]->{"data"}[$i] > $max)) {
+                $max = $datasets[1]->{"data"}[$i];
+            }
+            if (($datasets[2]->{"data"}[$i] > $max)) {
+                $max = $datasets[2]->{"data"}[$i];
+            }
+            if (($datasets[3]->{"data"}[$i] > $max)) {
+                $max = $datasets[3]->{"data"}[$i];
+            }
+            if (($datasets[0]->{"data"}[$i] < $min)) {
+                $min = $datasets[0]->{"data"}[$i];
+            }
+            if (($datasets[1]->{"data"}[$i] < $min)) {
+                $min = $datasets[1]->{"data"}[$i];
+            }
+            if (($datasets[2]->{"data"}[$i] < $min)) {
+                $min = $datasets[2]->{"data"}[$i];
+            }
+            if (($datasets[3]->{"data"}[$i] < $min)) {
+                $min = $datasets[3]->{"data"}[$i];
             }
             $i = ($i + 1);
         }
@@ -100,7 +118,7 @@ class Rafaello {
         // configure styling attributes
 
         $attr = json_decode("{}");
-        $attr->{"width"} = intval(floor(($options->{"width"} - ((intval(floor($points / 4)) - 1) * 5)) / intval(floor($points / 4))));
+        $attr->{"width"} = intval(floor(($options->{"width"} - (($points - 1) * 5)) / $points));
         $attr->{"fill"} = "#00cc00";
         $attr->{"fill-opacity"} = 0.75;
         $attr->{"stroke"} = "#004000";
@@ -115,7 +133,7 @@ class Rafaello {
 
         $i = 0;
         while (($i < $points)) {
-            $attr->{"x"} = ((($options->{"x"} + ($attr->{"width"} * intval(floor($i / 4)))) + (5 * intval(floor($i / 4)))) + 0.5);
+            $attr->{"x"} = ((($options->{"x"} + ($attr->{"width"} * $i)) + (5 * $i)) + 0.5);
 
             // lines
 
@@ -124,30 +142,30 @@ class Rafaello {
 
             // body
 
-            if (($dataset->{"data"}[$i] < $dataset->{"data"}[($i + 3)])) {
-                $attr->{"y"} = (((10 + $renderHeight) - round(($renderHeight * (($dataset->{"data"}[($i + 3)] - $min) / ($max - $min))), 0)) + 0.5);
-                $attr->{"height"} = ($renderHeight * (($dataset->{"data"}[($i + 3)] - $dataset->{"data"}[$i]) / ($max - $min)));
+            if (($datasets[0]->{"data"}[$i] < $datasets[3]->{"data"}[$i])) {
+                $attr->{"y"} = (((10 + $renderHeight) - round(($renderHeight * (($datasets[3]->{"data"}[$i] - $min) / ($max - $min))), 0)) + 0.5);
+                $attr->{"height"} = ($renderHeight * (($datasets[3]->{"data"}[$i] - $datasets[0]->{"data"}[$i]) / ($max - $min)));
                 $attr->{"fill"} = "#00cc00";
                 $attr->{"stroke"} = "#004000";
             } else {
-                $attr->{"y"} = (((10 + $renderHeight) - round(($renderHeight * (($dataset->{"data"}[$i] - $min) / ($max - $min))), 0)) + 0.5);
-                $attr->{"height"} = ($renderHeight * (($dataset->{"data"}[$i] - $dataset->{"data"}[($i + 3)]) / ($max - $min)));
+                $attr->{"y"} = (((10 + $renderHeight) - round(($renderHeight * (($datasets[0]->{"data"}[$i] - $min) / ($max - $min))), 0)) + 0.5);
+                $attr->{"height"} = ($renderHeight * (($datasets[0]->{"data"}[$i] - $datasets[3]->{"data"}[$i]) / ($max - $min)));
                 $attr->{"fill"} = "#cc0000";
                 $attr->{"stroke"} = "#400000";
             }
 
-            $lineAttr->{"y1"} = (((10 + $renderHeight) - round(($renderHeight * (($dataset->{"data"}[($i + 1)] - $min) / ($max - $min))), 0)) + 0.5);
+            $lineAttr->{"y1"} = (((10 + $renderHeight) - round(($renderHeight * (($datasets[1]->{"data"}[$i] - $min) / ($max - $min))), 0)) + 0.5);
             $lineAttr->{"y2"} = $attr->{"y"};
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $lineAttr->{"y1"} = ($attr->{"y"} + $attr->{"height"});
-            $lineAttr->{"y2"} = (((10 + $renderHeight) - round(($renderHeight * (($dataset->{"data"}[($i + 2)] - $min) / ($max - $min))), 0)) + 0.5);
+            $lineAttr->{"y2"} = (((10 + $renderHeight) - round(($renderHeight * (($datasets[2]->{"data"}[$i] - $min) / ($max - $min))), 0)) + 0.5);
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $component = ($component . self::BuildElement("rect", $attr, ""));
 
 
-            $i = ($i + 4);
+            $i = ($i + 1);
         }
 
         return $component;
@@ -253,13 +271,17 @@ class Rafaello {
         $points = count($dataset->{"data"});
 
         $min = $options->{"min"};
-        $max = $dataset->{"data"}[0];
-        $i = 1;
-        while (($i < $points)) {
-            if (($dataset->{"data"}[$i] > $max)) {
-                $max = $dataset->{"data"}[$i];
+        if (property_exists($options, "max")) {
+            $max = $options->{"max"};
+        } else {
+            $max = $dataset->{"data"}[0];
+            $i = 1;
+            while (($i < $points)) {
+                if (($dataset->{"data"}[$i] > $max)) {
+                    $max = $dataset->{"data"}[$i];
+                }
+                $i = ($i + 1);
             }
-            $i = ($i + 1);
         }
 
         // determine scale items
@@ -410,7 +432,7 @@ class Rafaello {
 
             switch ($component->{"type"}) {
                 case "candlestick":
-                    $composition = ($composition . self::CandlestickChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
+                    $composition = ($composition . self::CandlestickChart(($svgWidth - 1), ($svgHeight - 1), $object->{"datasets"}, $options));
                     break;
                 case "bar":
                     $composition = ($composition . self::BarChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));

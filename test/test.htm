@@ -66,7 +66,7 @@
             <tr valign="top">
                 <td><div id="chart8"></div></td>
                 <td width="20px">&nbsp;</td>
-                <td>{"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]}], "components":[{"type":"candlestick","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right","min":70}}]}</td>
+                <td>{"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]}], "components":[{"type":"candlestick","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right","min":70,"max":140}}]}</td>
             </tr>
         </table>                                             
     </body>
@@ -96,7 +96,6 @@
     dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[10,50,25,100,75]}], "components":[{"type":"line","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right"}}]}), "text/xml");
     document.getElementById('chart7').appendChild(dom.documentElement);    
 
-    //dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[100, 120, 90, 110, 110, 140, 100, 130, 120, 130, 70, 90]}], "components":[{"type":"candlestick","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right","min":70}}]}), "text/xml");
-    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]}], "components":[{"type":"candlestick","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right","min":70}}]}), "text/xml");
+    dom = parser.parseFromString(Rafaello.Render(300, 200, {"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]}], "components":[{"type":"candlestick","options":{"width":260}}, {"type":"scale","options":{"x":265,"align":"right","min":70,"max":140}}]}), "text/xml");
     document.getElementById('chart8').appendChild(dom.documentElement);      
 </script>

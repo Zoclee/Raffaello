@@ -110,7 +110,6 @@
             if ((datasets[3]['data'][i] < min)) {
                 min = datasets[3]['data'][i];
             }
-            alert(i);
             i = (i + 1);
         }
 
@@ -270,13 +269,17 @@
         points = Object.keys(dataset['data']).length;
 
         min = options['min'];
-        max = dataset['data'][0];
-        i = 1;
-        while ((i < points)) {
-            if ((dataset['data'][i] > max)) {
-                max = dataset['data'][i];
+        if (options.hasOwnProperty('max')) {
+            max = options['max'];
+        } else {
+            max = dataset['data'][0];
+            i = 1;
+            while ((i < points)) {
+                if ((dataset['data'][i] > max)) {
+                    max = dataset['data'][i];
+                }
+                i = (i + 1);
             }
-            i = (i + 1);
         }
 
         // determine scale items
