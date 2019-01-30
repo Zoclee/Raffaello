@@ -100,8 +100,7 @@ module Rafaello {
             } 
             if datasets[3]["data"][i] < min {
                min = datasets[3]["data"][i]
-            }           
-            echo(i)                          
+            }                                
             i = i + 1
         }
 
