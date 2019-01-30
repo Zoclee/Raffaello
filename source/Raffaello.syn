@@ -54,7 +54,7 @@ module Rafaello {
 
     // ***** CandlestickChart ********************
 
-    method string CandlestickChart(int32 svgWidth, int32 svgHeight, json dataset, json options) {
+    method string CandlestickChart(int32 svgWidth, int32 svgHeight, json datasets, json options) {
         string component
         json attr
         json lineAttr
@@ -71,25 +71,44 @@ module Rafaello {
 
         // determine maximum height
 
-        points = count(dataset["data"]) 
+        points = count(datasets[0]["data"]) 
 
-        max = dataset["data"][0]
-        min = dataset["data"][0]
-        i = 1
+        max = datasets[0]["data"][0]
+        min = datasets[0]["data"][0]
+        i = 0
         while i < points {
-            if dataset["data"][i] > max {
-               max = dataset["data"][i]
+            if datasets[0]["data"][i] > max {
+               max = datasets[0]["data"][i]
             }
-            if dataset["data"][i] < min {
-               min = dataset["data"][i]
+            if datasets[1]["data"][i] > max {
+               max = datasets[1]["data"][i]
+            }
+            if datasets[2]["data"][i] > max {
+               max = datasets[2]["data"][i]
+            }
+            if datasets[3]["data"][i] > max {
+               max = datasets[3]["data"][i]
+            }                                    
+            if datasets[0]["data"][i] < min {
+               min = datasets[0]["data"][i]
             } 
+            if datasets[1]["data"][i] < min {
+               min = datasets[1]["data"][i]
+            } 
+            if datasets[2]["data"][i] < min {
+               min = datasets[2]["data"][i]
+            } 
+            if datasets[3]["data"][i] < min {
+               min = datasets[3]["data"][i]
+            }           
+            echo(i)                          
             i = i + 1
         }
 
         // configure styling attributes
 
         attr = ParseJSON("{}")
-        attr["width"] = (options["width"] - ((points \ 4) - 1) * 5) \ (points \ 4)
+        attr["width"] = (options["width"] - (points - 1) * 5) \ points
         attr["fill"] = "#00cc00"
         attr["fill-opacity"] = 0.75
         attr["stroke"] = "#004000"
@@ -104,7 +123,7 @@ module Rafaello {
 
         i = 0
         while i < points {
-            attr["x"] = options["x"] + attr["width"] * (i \ 4) + (5 * (i \ 4)) + 0.5
+            attr["x"] = options["x"] + attr["width"] * i + (5 * i) + 0.5
 
             // lines
             
@@ -113,30 +132,30 @@ module Rafaello {
 
             // body
 
-            if (dataset["data"][i] < dataset["data"][i + 3]) {
-                attr["y"] = 10 + renderHeight - Round( renderHeight * ((dataset["data"][i + 3] - min) / (max - min)), 0 ) + 0.5
-                attr["height"] = renderHeight * (dataset["data"][i + 3] - dataset["data"][i]) / (max - min)
+            if (datasets[0]["data"][i] < datasets[3]["data"][i]) {
+                attr["y"] = 10 + renderHeight - Round( renderHeight * ((datasets[3]["data"][i] - min) / (max - min)), 0 ) + 0.5
+                attr["height"] = renderHeight * (datasets[3]["data"][i] - datasets[0]["data"][i]) / (max - min)
                 attr["fill"] = "#00cc00"
                 attr["stroke"] = "#004000"         
             } else {
-                attr["y"] = 10 + renderHeight - Round( renderHeight * ((dataset["data"][i] - min) / (max - min)), 0 ) + 0.5
-                attr["height"] = renderHeight * (dataset["data"][i] - dataset["data"][i + 3]) / (max - min)     
+                attr["y"] = 10 + renderHeight - Round( renderHeight * ((datasets[0]["data"][i] - min) / (max - min)), 0 ) + 0.5
+                attr["height"] = renderHeight * (datasets[0]["data"][i] - datasets[3]["data"][i]) / (max - min)     
                 attr["fill"] = "#cc0000"
                 attr["stroke"] = "#400000"    
             }
 
-            lineAttr["y1"] = 10 + renderHeight - Round( renderHeight * ((dataset["data"][i + 1] - min) / (max - min)), 0 ) + 0.5   
+            lineAttr["y1"] = 10 + renderHeight - Round( renderHeight * ((datasets[1]["data"][i] - min) / (max - min)), 0 ) + 0.5   
             lineAttr["y2"] = attr["y"]
             component = component + BuildElement("line", lineAttr, "") 
             
             lineAttr["y1"] = attr["y"] + attr["height"]
-            lineAttr["y2"] = 10 + renderHeight - Round( renderHeight * ((dataset["data"][i + 2] - min) / (max - min)), 0 ) + 0.5   
+            lineAttr["y2"] = 10 + renderHeight - Round( renderHeight * ((datasets[2]["data"][i] - min) / (max - min)), 0 ) + 0.5   
             component = component + BuildElement("line", lineAttr, "")                 
 
             component = component + BuildElement("rect", attr, "")            
             
 
-            i = i + 4
+            i = i + 1
         }
 
         return component
@@ -389,7 +408,7 @@ module Rafaello {
 
             switch component["type"] {
                 case "candlestick" {                                       
-                    composition = composition + CandlestickChart(svgWidth - 1, svgHeight - 1, dataset, options)
+                    composition = composition + CandlestickChart(svgWidth - 1, svgHeight - 1, object["datasets"], options)
                 }                
                 case "bar" {                                       
                     composition = composition + BarChart(svgWidth - 1, svgHeight - 1, dataset, options)
