@@ -243,10 +243,7 @@ class Rafaello {
         $component = "";
         $lineAttr = json_decode("{}");
         $textAttr = json_decode("{}");
-        $scaleItems = array();
         $i = 0;
-        $min = 0;
-        $max = 0;
         $points = 0;
         $y = 0;
         $step = 0;
@@ -262,39 +259,14 @@ class Rafaello {
         if (!(property_exists($options, "align"))) {
             $options->{"align"} = "left";
         }
-        if (!(property_exists($options, "min"))) {
-            $options->{"min"} = 0;
-        }
 
-        // determine min and max
+        // determine step
 
         $points = count($dataset->{"data"});
+        $step = ($renderHeight / ($points - 1));
 
-        $min = $options->{"min"};
-        if (property_exists($options, "max")) {
-            $max = $options->{"max"};
-        } else {
-            $max = $dataset->{"data"}[0];
-            $i = 1;
-            while (($i < $points)) {
-                if (($dataset->{"data"}[$i] > $max)) {
-                    $max = $dataset->{"data"}[$i];
-                }
-                $i = ($i + 1);
-            }
-        }
-
-        // determine scale items
-
-        $step = intval(floor(($max - $min) / 5));
-        $scaleItems[] = $max;
-        $i = ($max - $step);
-        while (($i >= $min)) {
-            $scaleItems[] = $i;
-            $i = ($i - $step);
-        }
-
-        $tmpStr = (string)($max);
+        // TODO: Loop through all items
+        $tmpStr = (string)($dataset->{"data"}[($points - 1)]);
         $scaleWidth = (strlen($tmpStr) * 7);
 
         $lineAttr = json_decode("{}");
@@ -319,17 +291,17 @@ class Rafaello {
             $textAttr->{"x"} = ($options->{"x"} + 9);
             $lineAttr->{"x1"} = $options->{"x"};
             $lineAttr->{"x2"} = ($options->{"x"} + 5);
+            $y = (10 + $renderHeight);
             $i = 0;
-            while (($i < count($scaleItems))) {
-                $y = (10 + round(($renderHeight - ((($scaleItems[$i] - $min) / ($max - $min)) * $renderHeight)), 0));
-
+            while (($i < $points)) {
                 $lineAttr->{"y1"} = ($y + 0.5);
                 $lineAttr->{"y2"} = ($y + 0.5);
                 $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
                 $textAttr->{"y"} = $y;
-                $component = ($component . self::BuildElement("text", $textAttr, (string)($scaleItems[$i])));
+                $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
 
+                $y = ($y - $step);
                 $i = ($i + 1);
             }
 
@@ -348,16 +320,17 @@ class Rafaello {
             $textAttr->{"x"} = $options->{"x"};
             $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 5);
             $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10);
+            $y = (10 + $renderHeight);
             $i = 0;
-            while (($i < count($scaleItems))) {
-                $y = (10 + round(($renderHeight - ((($scaleItems[$i] - $min) / ($max - $min)) * $renderHeight)), 0));
+            while (($i < $points)) {
                 $lineAttr->{"y1"} = ($y + 0.5);
                 $lineAttr->{"y2"} = ($y + 0.5);
                 $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
                 $textAttr->{"y"} = $y;
-                $component = ($component . self::BuildElement("text", $textAttr, (string)($scaleItems[$i])));
+                $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
 
+                $y = ($y - $step);
                 $i = ($i + 1);
             }
 

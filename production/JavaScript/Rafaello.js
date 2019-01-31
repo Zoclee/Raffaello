@@ -241,10 +241,7 @@
         var component = '';
         var lineAttr = JSON.parse('{}');
         var textAttr = JSON.parse('{}');
-        var scaleItems = [];
         var i = 0;
-        var min = 0;
-        var max = 0;
         var points = 0;
         var y = 0;
         var step = 0;
@@ -260,39 +257,14 @@
         if (!(options.hasOwnProperty('align'))) {
             options['align'] = 'left';
         }
-        if (!(options.hasOwnProperty('min'))) {
-            options['min'] = 0;
-        }
 
-        // determine min and max
+        // determine step
 
         points = Object.keys(dataset['data']).length;
+        step = (renderHeight / (points - 1));
 
-        min = options['min'];
-        if (options.hasOwnProperty('max')) {
-            max = options['max'];
-        } else {
-            max = dataset['data'][0];
-            i = 1;
-            while ((i < points)) {
-                if ((dataset['data'][i] > max)) {
-                    max = dataset['data'][i];
-                }
-                i = (i + 1);
-            }
-        }
-
-        // determine scale items
-
-        step = parseInt(Math.floor((max - min) / 5));
-        scaleItems.push(max);
-        i = (max - step);
-        while ((i >= min)) {
-            scaleItems.push(i);
-            i = (i - step);
-        }
-
-        tmpStr = (max).toString();
+        // TODO: Loop through all items
+        tmpStr = (dataset['data'][(points - 1)]).toString();
         scaleWidth = (tmpStr.length * 7);
 
         lineAttr = JSON.parse('{}');
@@ -317,17 +289,17 @@
             textAttr['x'] = (options['x'] + 9);
             lineAttr['x1'] = options['x'];
             lineAttr['x2'] = (options['x'] + 5);
+            y = (10 + renderHeight);
             i = 0;
-            while ((i < scaleItems.length)) {
-                y = (10 + (Math.round((renderHeight - (((scaleItems[i] - min) / (max - min)) * renderHeight)) * Math.pow(10, 0)) / Math.pow(10, 0)));
-
+            while ((i < points)) {
                 lineAttr['y1'] = (y + 0.5);
                 lineAttr['y2'] = (y + 0.5);
                 component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                 textAttr['y'] = y;
-                component = (component + Rafaello.BuildElement('text', textAttr, (scaleItems[i]).toString()));
+                component = (component + Rafaello.BuildElement('text', textAttr, (dataset['data'][i]).toString()));
 
+                y = (y - step);
                 i = (i + 1);
             }
 
@@ -346,16 +318,17 @@
             textAttr['x'] = options['x'];
             lineAttr['x1'] = ((options['x'] + scaleWidth) + 5);
             lineAttr['x2'] = ((options['x'] + scaleWidth) + 10);
+            y = (10 + renderHeight);
             i = 0;
-            while ((i < scaleItems.length)) {
-                y = (10 + (Math.round((renderHeight - (((scaleItems[i] - min) / (max - min)) * renderHeight)) * Math.pow(10, 0)) / Math.pow(10, 0)));
+            while ((i < points)) {
                 lineAttr['y1'] = (y + 0.5);
                 lineAttr['y2'] = (y + 0.5);
                 component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                 textAttr['y'] = y;
-                component = (component + Rafaello.BuildElement('text', textAttr, (scaleItems[i]).toString()));
+                component = (component + Rafaello.BuildElement('text', textAttr, (dataset['data'][i]).toString()));
 
+                y = (y - step);
                 i = (i + 1);
             }
 

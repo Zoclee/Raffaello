@@ -228,10 +228,7 @@ module Rafaello {
         string component
         json lineAttr
         json textAttr
-        int32 scaleItems[]
         int32 i 
-        int32 min
-        int32 max
         int32 points
         int32 y
         int32 step
@@ -243,37 +240,14 @@ module Rafaello {
 
         if not options.HasKey("x") { options["x"] = 0 }
         if not options.HasKey("align") { options["align"] = "left" }
-        if not options.HasKey("min") { options["min"] = 0 }
 
-        // determine min and max
+        // determine step
 
         points = count(dataset["data"])
+        step = renderHeight / (points - 1)
 
-        min = options["min"]
-        if options.HasKey("max") {
-            max = options["max"]
-        } else {
-            max = dataset["data"][0]
-            i = 1
-            while i < points {
-                if dataset["data"][i] > max {
-                max = dataset["data"][i]
-                }
-                i = i + 1
-            }
-        }
-
-        // determine scale items
-
-        step = (max - min) \ 5
-        scaleItems.Append(max)
-        i = max - step
-        while i >= min {
-            scaleItems.Append(i)
-            i = i - step
-        }
-
-        tmpStr = Str(max)
+        // TODO: Loop through all items
+        tmpStr = Str(dataset["data"][points - 1])
         scaleWidth = Count(tmpStr) * 7
 
         lineAttr = ParseJSON("{}")
@@ -298,17 +272,17 @@ module Rafaello {
             textAttr["x"] = options["x"] + 9
             lineAttr["x1"] = options["x"] 
             lineAttr["x2"] = options["x"] + 5
+            y = 10 + renderHeight
             i = 0
-            while i < Count(scaleItems) {
-                y = 10 + Round(renderHeight - ((scaleItems[i] - min) / (max - min)) * renderHeight, 0)
-                
+            while i < points {
                 lineAttr["y1"] = y + 0.5
                 lineAttr["y2"] = y + 0.5
                 component = component + BuildElement("line", lineAttr, "")
             
                 textAttr["y"] = y
-                component = component + BuildElement("text", textAttr, Str(scaleItems[i]))
+                component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
 
+                y = y - step
                 i = i + 1
             }            
 
@@ -327,16 +301,17 @@ module Rafaello {
             textAttr["x"] = options["x"] 
             lineAttr["x1"] = options["x"] + scaleWidth + 5
             lineAttr["x2"] = options["x"] + scaleWidth + 10
+            y = 10 + renderHeight
             i = 0
-            while i < Count(scaleItems) {
-                y = 10 + Round(renderHeight - ((scaleItems[i] - min) / (max - min)) * renderHeight, 0)                
+            while i < points {         
                 lineAttr["y1"] = y + 0.5                
                 lineAttr["y2"] = y + 0.5
                 component = component + BuildElement("line", lineAttr, "")
             
                 textAttr["y"] = y
-                component = component + BuildElement("text", textAttr, Str(scaleItems[i]))
+                component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
 
+                y = y - step
                 i = i + 1
             }
 
