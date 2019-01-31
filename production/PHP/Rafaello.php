@@ -3,9 +3,9 @@ class Rafaello {
     public function __construct() {
     }
 
-    // ***** BarChart ********************
+    // ***** BarGraph ********************
 
-    public static function BarChart($svgWidth, $svgHeight, $dataset, $options) {
+    public static function BarGraph($svgWidth, $svgHeight, $dataset, $options) {
         $component = "";
         $attr = json_decode("{}");
         $points = 0;
@@ -59,9 +59,9 @@ class Rafaello {
         return $component;
     }
 
-    // ***** CandlestickChart ********************
+    // ***** CandlestickGraph ********************
 
-    public static function CandlestickChart($svgWidth, $svgHeight, $datasets, $options) {
+    public static function CandlestickGraph($svgWidth, $svgHeight, $datasets, $options) {
         $component = "";
         $attr = json_decode("{}");
         $lineAttr = json_decode("{}");
@@ -171,9 +171,9 @@ class Rafaello {
         return $component;
     }
 
-    // ***** LineChart ********************
+    // ***** LineGraph ********************
 
-    public static function LineChart($svgWidth, $svgHeight, $dataset, $options) {
+    public static function LineGraph($svgWidth, $svgHeight, $dataset, $options) {
         $component = "";
         $attr = json_decode("{}");
         $points = 0;
@@ -431,14 +431,14 @@ class Rafaello {
             // render component with selected dataset
 
             switch ($component->{"type"}) {
-                case "candlestick":
-                    $composition = ($composition . self::CandlestickChart(($svgWidth - 1), ($svgHeight - 1), $object->{"datasets"}, $options));
+                case "candlestickgraph":
+                    $composition = ($composition . self::CandlestickGraph(($svgWidth - 1), ($svgHeight - 1), $object->{"datasets"}, $options));
                     break;
-                case "bar":
-                    $composition = ($composition . self::BarChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
+                case "bargraph":
+                    $composition = ($composition . self::BarGraph(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
                     break;
-                case "line":
-                    $composition = ($composition . self::LineChart(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
+                case "linegraph":
+                    $composition = ($composition . self::LineGraph(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
                     break;
                 case "scale":
                     $composition = ($composition . self::Scale(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));

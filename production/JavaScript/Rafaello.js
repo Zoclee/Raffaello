@@ -1,9 +1,9 @@
 (function () {
     var Rafaello = {};
 
-    // ***** BarChart ********************
+    // ***** BarGraph ********************
 
-    Rafaello.BarChart = function (svgWidth, svgHeight, dataset, options) {
+    Rafaello.BarGraph = function (svgWidth, svgHeight, dataset, options) {
         var component = '';
         var attr = JSON.parse('{}');
         var points = 0;
@@ -57,9 +57,9 @@
         return component;
     }
 
-    // ***** CandlestickChart ********************
+    // ***** CandlestickGraph ********************
 
-    Rafaello.CandlestickChart = function (svgWidth, svgHeight, datasets, options) {
+    Rafaello.CandlestickGraph = function (svgWidth, svgHeight, datasets, options) {
         var component = '';
         var attr = JSON.parse('{}');
         var lineAttr = JSON.parse('{}');
@@ -169,9 +169,9 @@
         return component;
     }
 
-    // ***** LineChart ********************
+    // ***** LineGraph ********************
 
-    Rafaello.LineChart = function (svgWidth, svgHeight, dataset, options) {
+    Rafaello.LineGraph = function (svgWidth, svgHeight, dataset, options) {
         var component = '';
         var attr = JSON.parse('{}');
         var points = 0;
@@ -429,14 +429,14 @@
             // render component with selected dataset
 
             switch (component['type']) {
-                case "candlestick":
-                    composition = (composition + Rafaello.CandlestickChart((svgWidth - 1), (svgHeight - 1), object['datasets'], options));
+                case "candlestickgraph":
+                    composition = (composition + Rafaello.CandlestickGraph((svgWidth - 1), (svgHeight - 1), object['datasets'], options));
                     break;
-                case "bar":
-                    composition = (composition + Rafaello.BarChart((svgWidth - 1), (svgHeight - 1), dataset, options));
+                case "bargraph":
+                    composition = (composition + Rafaello.BarGraph((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
-                case "line":
-                    composition = (composition + Rafaello.LineChart((svgWidth - 1), (svgHeight - 1), dataset, options));
+                case "linegraph":
+                    composition = (composition + Rafaello.LineGraph((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
                 case "scale":
                     composition = (composition + Rafaello.Scale((svgWidth - 1), (svgHeight - 1), dataset, options));

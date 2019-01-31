@@ -1,8 +1,8 @@
 module Rafaello {
     
-    // ***** BarChart ********************
+    // ***** BarGraph ********************
 
-    method string BarChart(int32 svgWidth, int32 svgHeight, json dataset, json options) {
+    method string BarGraph(int32 svgWidth, int32 svgHeight, json dataset, json options) {
         string component
         json attr
         int32 points
@@ -52,9 +52,9 @@ module Rafaello {
         return component
     }
 
-    // ***** CandlestickChart ********************
+    // ***** CandlestickGraph ********************
 
-    method string CandlestickChart(int32 svgWidth, int32 svgHeight, json datasets, json options) {
+    method string CandlestickGraph(int32 svgWidth, int32 svgHeight, json datasets, json options) {
         string component
         json attr
         json lineAttr
@@ -160,9 +160,9 @@ module Rafaello {
         return component
     }
 
-   // ***** LineChart ********************
+   // ***** LineGraph ********************
 
-    method string LineChart(int32 svgWidth, int32 svgHeight, json dataset, json options) {
+    method string LineGraph(int32 svgWidth, int32 svgHeight, json dataset, json options) {
         string component
         json attr
         int32 points
@@ -410,14 +410,14 @@ module Rafaello {
             // render component with selected dataset
 
             switch component["type"] {
-                case "candlestick" {                                       
-                    composition = composition + CandlestickChart(svgWidth - 1, svgHeight - 1, object["datasets"], options)
+                case "candlestickgraph" {                                       
+                    composition = composition + CandlestickGraph(svgWidth - 1, svgHeight - 1, object["datasets"], options)
                 }                
-                case "bar" {                                       
-                    composition = composition + BarChart(svgWidth - 1, svgHeight - 1, dataset, options)
+                case "bargraph" {                                       
+                    composition = composition + BarGraph(svgWidth - 1, svgHeight - 1, dataset, options)
                 }
-                case "line" {                                       
-                    composition = composition + LineChart(svgWidth - 1, svgHeight - 1, dataset, options)
+                case "linegraph" {                                       
+                    composition = composition + LineGraph(svgWidth - 1, svgHeight - 1, dataset, options)
                 }                
                 case "scale" {
                     composition = composition + Scale(svgWidth - 1, svgHeight - 1, dataset, options)
