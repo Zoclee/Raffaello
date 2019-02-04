@@ -230,7 +230,8 @@ module Rafaello {
         json textAttr
         int32 i 
         int32 points
-        int32 y
+        int32 x
+        int32 y        
         int32 step
         string tmpStr
         int32 scaleWidth 
@@ -238,81 +239,140 @@ module Rafaello {
 
         // initialize default values
 
-        if not options.HasKey("x") { options["x"] = 0 }
         if not options.HasKey("align") { options["align"] = "left" }
+        if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("y") { options["y"] = 0 }
 
         // determine step
 
         points = count(dataset["data"])
-        step = renderHeight / (points - 1)
+
 
         // TODO: Loop through all items
         tmpStr = Str(dataset["data"][points - 1])
         scaleWidth = Count(tmpStr) * 7
 
-        lineAttr = ParseJSON("{}")
-        lineAttr["y1"] = 10
-        lineAttr["y2"] = svgHeight + 1
-        lineAttr["stroke"] = "#000000"
-        lineAttr["stroke-width"] = 1
-
-        if options["align"] = "right" {
-
-            // draw vertical line
-
-            lineAttr["x1"] = options["x"] + 0.5
-            lineAttr["x2"] = options["x"] + 0.5
-
-            component = component + BuildElement("line", lineAttr, "")
-
-            // draw scale items
-
-            textAttr = ParseJSON("{}")
-            textAttr["fill"] = "#000000"  
-            textAttr["x"] = options["x"] + 9
-            lineAttr["x1"] = options["x"] 
-            lineAttr["x2"] = options["x"] + 5
-            y = 10 + renderHeight
-            i = 0
-            while i < points {
-                lineAttr["y1"] = y + 0.5
-                lineAttr["y2"] = y + 0.5
-                component = component + BuildElement("line", lineAttr, "")
+        switch options["align"] {
             
-                textAttr["y"] = y
-                component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
+            case "left" {
 
-                y = y - step
-                i = i + 1
-            }            
+                step = renderHeight / (points - 1)
 
-        } else {
+                lineAttr = ParseJSON("{}")
+                lineAttr["y1"] = 10
+                lineAttr["y2"] = svgHeight + 1
+                lineAttr["stroke"] = "#000000"
+                lineAttr["stroke-width"] = 1
 
-            // draw vertical line
+                // draw vertical line
 
-            lineAttr["x1"] = options["x"] + scaleWidth + 10.5 
-            lineAttr["x2"] = options["x"] + scaleWidth + 10.5
-            component = component + BuildElement("line", lineAttr, "")
-
-            // draw scale items
-
-            textAttr = ParseJSON("{}")
-            textAttr["fill"] = "#000000"  
-            textAttr["x"] = options["x"] 
-            lineAttr["x1"] = options["x"] + scaleWidth + 5
-            lineAttr["x2"] = options["x"] + scaleWidth + 10
-            y = 10 + renderHeight
-            i = 0
-            while i < points {         
-                lineAttr["y1"] = y + 0.5                
-                lineAttr["y2"] = y + 0.5
+                lineAttr["x1"] = options["x"] + scaleWidth + 10.5 
+                lineAttr["x2"] = options["x"] + scaleWidth + 10.5
                 component = component + BuildElement("line", lineAttr, "")
-            
-                textAttr["y"] = y
-                component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
 
-                y = y - step
-                i = i + 1
+                // draw scale items
+
+                textAttr = ParseJSON("{}")
+                textAttr["fill"] = "#000000"  
+                textAttr["x"] = options["x"] 
+                lineAttr["x1"] = options["x"] + scaleWidth + 5
+                lineAttr["x2"] = options["x"] + scaleWidth + 10
+                y = 10 + renderHeight
+                i = 0
+                while i < points {         
+                    lineAttr["y1"] = y + 0.5                
+                    lineAttr["y2"] = y + 0.5
+                    component = component + BuildElement("line", lineAttr, "")
+                
+                    textAttr["y"] = y
+                    component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
+
+                    y = y - step
+                    i = i + 1
+                }  
+
+            }
+
+            case "right" {
+
+                step = renderHeight / (points - 1)
+
+                lineAttr = ParseJSON("{}")
+                lineAttr["y1"] = 10
+                lineAttr["y2"] = svgHeight + 1
+                lineAttr["stroke"] = "#000000"
+                lineAttr["stroke-width"] = 1
+
+                // draw vertical line
+
+                lineAttr["x1"] = options["x"] + 0.5
+                lineAttr["x2"] = options["x"] + 0.5
+
+                component = component + BuildElement("line", lineAttr, "")
+
+                // draw scale items
+
+                textAttr = ParseJSON("{}")
+                textAttr["fill"] = "#000000"  
+                textAttr["x"] = options["x"] + 9
+                lineAttr["x1"] = options["x"] 
+                lineAttr["x2"] = options["x"] + 5
+                y = 10 + renderHeight
+                i = 0
+                while i < points {
+                    lineAttr["y1"] = y + 0.5
+                    lineAttr["y2"] = y + 0.5
+                    component = component + BuildElement("line", lineAttr, "")
+                
+                    textAttr["y"] = y
+                    component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
+
+                    y = y - step
+                    i = i + 1
+                }  
+
+            }
+
+            case "top" {
+
+                step = svgWidth / (points - 1)
+
+                lineAttr = ParseJSON("{}")
+                lineAttr["x1"] = 0
+                lineAttr["x2"] = svgWidth
+                lineAttr["stroke"] = "#000000"
+                lineAttr["stroke-width"] = 1
+                
+                // draw horizontal line
+
+                lineAttr["y1"] = options["y"] + 18
+                lineAttr["y2"] = options["y"] + 18
+                component = component + BuildElement("line", lineAttr, "")
+
+                // draw scale items
+
+                textAttr = ParseJSON("{}")
+                textAttr["fill"] = "#000000"  
+                textAttr["y"] = options["y"] + 12
+                textAttr["text-anchor"] = "middle"
+
+                lineAttr["y1"] = options["y"] + 14
+                lineAttr["y2"] = options["y"] + 18
+                
+                x = 0
+                i = 0
+                while i < points {         
+                    lineAttr["x1"] = x + 0.5                
+                    lineAttr["x2"] = x + 0.5
+                    component = component + BuildElement("line", lineAttr, "")
+                
+                    textAttr["x"] = x
+                    component = component + BuildElement("text", textAttr, Str(dataset["data"][i]))
+
+                    x = x + step
+                    i = i + 1
+                }  
+
             }
 
         }

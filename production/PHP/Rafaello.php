@@ -245,6 +245,7 @@ class Rafaello {
         $textAttr = json_decode("{}");
         $i = 0;
         $points = 0;
+        $x = 0;
         $y = 0;
         $step = 0;
         $tmpStr = "";
@@ -253,87 +254,144 @@ class Rafaello {
 
         // initialize default values
 
+        if (!(property_exists($options, "align"))) {
+            $options->{"align"} = "left";
+        }
         if (!(property_exists($options, "x"))) {
             $options->{"x"} = 0;
         }
-        if (!(property_exists($options, "align"))) {
-            $options->{"align"} = "left";
+        if (!(property_exists($options, "y"))) {
+            $options->{"y"} = 0;
         }
 
         // determine step
 
         $points = count($dataset->{"data"});
-        $step = ($renderHeight / ($points - 1));
+
 
         // TODO: Loop through all items
         $tmpStr = (string)($dataset->{"data"}[($points - 1)]);
         $scaleWidth = (strlen($tmpStr) * 7);
 
-        $lineAttr = json_decode("{}");
-        $lineAttr->{"y1"} = 10;
-        $lineAttr->{"y2"} = ($svgHeight + 1);
-        $lineAttr->{"stroke"} = "#000000";
-        $lineAttr->{"stroke-width"} = 1;
+        switch ($options->{"align"}) {
+            case "left":
 
-        if (($options->{"align"} == "right")) {
+                $step = ($renderHeight / ($points - 1));
 
-            // draw vertical line
+                $lineAttr = json_decode("{}");
+                $lineAttr->{"y1"} = 10;
+                $lineAttr->{"y2"} = ($svgHeight + 1);
+                $lineAttr->{"stroke"} = "#000000";
+                $lineAttr->{"stroke-width"} = 1;
 
-            $lineAttr->{"x1"} = ($options->{"x"} + 0.5);
-            $lineAttr->{"x2"} = ($options->{"x"} + 0.5);
+                // draw vertical line
 
-            $component = ($component . self::BuildElement("line", $lineAttr, ""));
-
-            // draw scale items
-
-            $textAttr = json_decode("{}");
-            $textAttr->{"fill"} = "#000000";
-            $textAttr->{"x"} = ($options->{"x"} + 9);
-            $lineAttr->{"x1"} = $options->{"x"};
-            $lineAttr->{"x2"} = ($options->{"x"} + 5);
-            $y = (10 + $renderHeight);
-            $i = 0;
-            while (($i < $points)) {
-                $lineAttr->{"y1"} = ($y + 0.5);
-                $lineAttr->{"y2"} = ($y + 0.5);
+                $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 10.5);
+                $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10.5);
                 $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
-                $textAttr->{"y"} = $y;
-                $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
+                // draw scale items
 
-                $y = ($y - $step);
-                $i = ($i + 1);
-            }
+                $textAttr = json_decode("{}");
+                $textAttr->{"fill"} = "#000000";
+                $textAttr->{"x"} = $options->{"x"};
+                $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 5);
+                $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10);
+                $y = (10 + $renderHeight);
+                $i = 0;
+                while (($i < $points)) {
+                    $lineAttr->{"y1"} = ($y + 0.5);
+                    $lineAttr->{"y2"} = ($y + 0.5);
+                    $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
-        } else {
+                    $textAttr->{"y"} = $y;
+                    $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
 
-            // draw vertical line
+                    $y = ($y - $step);
+                    $i = ($i + 1);
+                }
 
-            $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 10.5);
-            $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10.5);
-            $component = ($component . self::BuildElement("line", $lineAttr, ""));
+                break;
+            case "right":
 
-            // draw scale items
+                $step = ($renderHeight / ($points - 1));
 
-            $textAttr = json_decode("{}");
-            $textAttr->{"fill"} = "#000000";
-            $textAttr->{"x"} = $options->{"x"};
-            $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 5);
-            $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10);
-            $y = (10 + $renderHeight);
-            $i = 0;
-            while (($i < $points)) {
-                $lineAttr->{"y1"} = ($y + 0.5);
-                $lineAttr->{"y2"} = ($y + 0.5);
+                $lineAttr = json_decode("{}");
+                $lineAttr->{"y1"} = 10;
+                $lineAttr->{"y2"} = ($svgHeight + 1);
+                $lineAttr->{"stroke"} = "#000000";
+                $lineAttr->{"stroke-width"} = 1;
+
+                // draw vertical line
+
+                $lineAttr->{"x1"} = ($options->{"x"} + 0.5);
+                $lineAttr->{"x2"} = ($options->{"x"} + 0.5);
+
                 $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
-                $textAttr->{"y"} = $y;
-                $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
+                // draw scale items
 
-                $y = ($y - $step);
-                $i = ($i + 1);
-            }
+                $textAttr = json_decode("{}");
+                $textAttr->{"fill"} = "#000000";
+                $textAttr->{"x"} = ($options->{"x"} + 9);
+                $lineAttr->{"x1"} = $options->{"x"};
+                $lineAttr->{"x2"} = ($options->{"x"} + 5);
+                $y = (10 + $renderHeight);
+                $i = 0;
+                while (($i < $points)) {
+                    $lineAttr->{"y1"} = ($y + 0.5);
+                    $lineAttr->{"y2"} = ($y + 0.5);
+                    $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
+                    $textAttr->{"y"} = $y;
+                    $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
+
+                    $y = ($y - $step);
+                    $i = ($i + 1);
+                }
+
+                break;
+            case "top":
+
+                $step = ($svgWidth / ($points - 1));
+
+                $lineAttr = json_decode("{}");
+                $lineAttr->{"x1"} = 0;
+                $lineAttr->{"x2"} = $svgWidth;
+                $lineAttr->{"stroke"} = "#000000";
+                $lineAttr->{"stroke-width"} = 1;
+
+                // draw horizontal line
+
+                $lineAttr->{"y1"} = ($options->{"y"} + 18);
+                $lineAttr->{"y2"} = ($options->{"y"} + 18);
+                $component = ($component . self::BuildElement("line", $lineAttr, ""));
+
+                // draw scale items
+
+                $textAttr = json_decode("{}");
+                $textAttr->{"fill"} = "#000000";
+                $textAttr->{"y"} = ($options->{"y"} + 12);
+                $textAttr->{"text-anchor"} = "middle";
+
+                $lineAttr->{"y1"} = ($options->{"y"} + 14);
+                $lineAttr->{"y2"} = ($options->{"y"} + 18);
+
+                $x = 0;
+                $i = 0;
+                while (($i < $points)) {
+                    $lineAttr->{"x1"} = ($x + 0.5);
+                    $lineAttr->{"x2"} = ($x + 0.5);
+                    $component = ($component . self::BuildElement("line", $lineAttr, ""));
+
+                    $textAttr->{"x"} = $x;
+                    $component = ($component . self::BuildElement("text", $textAttr, (string)($dataset->{"data"}[$i])));
+
+                    $x = ($x + $step);
+                    $i = ($i + 1);
+                }
+
+                break;
         }
 
         return $component;
