@@ -9,7 +9,6 @@
         var points = 0;
         var i = 0;
         var max = 0;
-        var renderHeight = (svgHeight - 10);
 
         // initialize default values
 
@@ -47,9 +46,9 @@
 
         i = 0;
         while ((i < points)) {
-            attr['x'] = (((options['x'] + (attr['width'] * i)) + (5 * i)) + 0.5);
-            attr['height'] = (Math.round((renderHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            attr['y'] = (((10 + renderHeight) - attr['height']) + 0.5);
+            attr['x'] = ((options['x'] + (attr['width'] * i)) + (5 * i));
+            attr['height'] = (Math.round((svgHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            attr['y'] = (svgHeight - attr['height']);
             component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
         }
@@ -67,7 +66,6 @@
         var i = 0;
         var max = 0;
         var min = 0;
-        var renderHeight = (svgHeight - 10);
 
         // initialize default values
 
@@ -141,23 +139,23 @@
             // body
 
             if ((datasets[0]['data'][i] < datasets[3]['data'][i])) {
-                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * ((datasets[3]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
-                attr['height'] = (renderHeight * ((datasets[3]['data'][i] - datasets[0]['data'][i]) / (max - min)));
+                attr['y'] = (svgHeight - (Math.round((svgHeight * ((datasets[3]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0)));
+                attr['height'] = (svgHeight * ((datasets[3]['data'][i] - datasets[0]['data'][i]) / (max - min)));
                 attr['fill'] = '#00cc00';
                 attr['stroke'] = '#004000';
             } else {
-                attr['y'] = (((10 + renderHeight) - (Math.round((renderHeight * ((datasets[0]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
-                attr['height'] = (renderHeight * ((datasets[0]['data'][i] - datasets[3]['data'][i]) / (max - min)));
+                attr['y'] = (svgHeight - (Math.round((svgHeight * ((datasets[0]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0)));
+                attr['height'] = (svgHeight * ((datasets[0]['data'][i] - datasets[3]['data'][i]) / (max - min)));
                 attr['fill'] = '#cc0000';
                 attr['stroke'] = '#400000';
             }
 
-            lineAttr['y1'] = (((10 + renderHeight) - (Math.round((renderHeight * ((datasets[1]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+            lineAttr['y1'] = (svgHeight - (Math.round((svgHeight * ((datasets[1]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0)));
             lineAttr['y2'] = attr['y'];
             component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
             lineAttr['y1'] = (attr['y'] + attr['height']);
-            lineAttr['y2'] = (((10 + renderHeight) - (Math.round((renderHeight * ((datasets[2]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0))) + 0.5);
+            lineAttr['y2'] = (svgHeight - (Math.round((svgHeight * ((datasets[2]['data'][i] - min) / (max - min))) * Math.pow(10, 0)) / Math.pow(10, 0)));
             component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
             component = (component + Rafaello.BuildElement('rect', attr, ''));
@@ -180,7 +178,6 @@
         var path = '';
         var pointWidth = 0;
         var tmpHeight = 0;
-        var renderHeight = (svgHeight - 10);
 
         // initialize default values
 
@@ -219,9 +216,9 @@
         path = 'M';
         i = 0;
         while ((i < points)) {
-            path = (path + (((((options['x'] + (pointWidth * i)) + (pointWidth * 0.5)) + (5 * i)) + 0.5)).toString());
-            tmpHeight = (Math.round((renderHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            path = ((path + " ") + ((((10 + renderHeight) - tmpHeight) + 0.5)).toString());
+            path = (path + ((((options['x'] + (pointWidth * i)) + (pointWidth * 0.5)) + (5 * i))).toString());
+            tmpHeight = (Math.round((svgHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            path = ((path + " ") + ((svgHeight - tmpHeight)).toString());
             i = (i + 1);
             if ((i < points)) {
                 path = (path + " ");
@@ -248,7 +245,6 @@
         var step = 0;
         var tmpStr = '';
         var scaleWidth = 0;
-        var renderHeight = (svgHeight - 10);
 
         // initialize default values
 
@@ -274,10 +270,10 @@
         switch (options['align']) {
             case "left":
 
-                step = (renderHeight / (points - 1));
+                step = (svgHeight / (points - 1));
 
                 lineAttr = JSON.parse('{}');
-                lineAttr['y1'] = 10;
+                lineAttr['y1'] = 0;
                 lineAttr['y2'] = (svgHeight + 1);
                 lineAttr['stroke'] = '#000000';
                 lineAttr['stroke-width'] = 1;
@@ -295,11 +291,11 @@
                 textAttr['x'] = options['x'];
                 lineAttr['x1'] = ((options['x'] + scaleWidth) + 5);
                 lineAttr['x2'] = ((options['x'] + scaleWidth) + 10);
-                y = (10 + renderHeight);
+                y = svgHeight;
                 i = 0;
                 while ((i < points)) {
-                    lineAttr['y1'] = (y + 0.5);
-                    lineAttr['y2'] = (y + 0.5);
+                    lineAttr['y1'] = y;
+                    lineAttr['y2'] = y;
                     component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                     textAttr['y'] = y;
@@ -312,18 +308,18 @@
                 break;
             case "right":
 
-                step = (renderHeight / (points - 1));
+                step = (svgHeight / (points - 1));
 
                 lineAttr = JSON.parse('{}');
-                lineAttr['y1'] = 10;
+                lineAttr['y1'] = 0;
                 lineAttr['y2'] = (svgHeight + 1);
                 lineAttr['stroke'] = '#000000';
                 lineAttr['stroke-width'] = 1;
 
                 // draw vertical line
 
-                lineAttr['x1'] = (options['x'] + 0.5);
-                lineAttr['x2'] = (options['x'] + 0.5);
+                lineAttr['x1'] = options['x'];
+                lineAttr['x2'] = options['x'];
 
                 component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
@@ -334,11 +330,11 @@
                 textAttr['x'] = (options['x'] + 9);
                 lineAttr['x1'] = options['x'];
                 lineAttr['x2'] = (options['x'] + 5);
-                y = (10 + renderHeight);
+                y = svgHeight;
                 i = 0;
                 while ((i < points)) {
-                    lineAttr['y1'] = (y + 0.5);
-                    lineAttr['y2'] = (y + 0.5);
+                    lineAttr['y1'] = y;
+                    lineAttr['y2'] = y;
                     component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                     textAttr['y'] = y;
@@ -378,8 +374,8 @@
                 x = 0;
                 i = 0;
                 while ((i < points)) {
-                    lineAttr['x1'] = (x + 0.5);
-                    lineAttr['x2'] = (x + 0.5);
+                    lineAttr['x1'] = x;
+                    lineAttr['x2'] = x;
                     component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                     textAttr['x'] = x;

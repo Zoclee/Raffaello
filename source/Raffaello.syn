@@ -8,7 +8,6 @@ module Rafaello {
         int32 points
         int32 i 
         int32 max
-        int32 renderHeight = svgHeight - 10
 
         // initialize default values
 
@@ -42,9 +41,9 @@ module Rafaello {
 
         i = 0
         while i < points {
-            attr["x"] = options["x"] + attr["width"] * i + (5 * i) + 0.5
-            attr["height"] = Round( renderHeight * (dataset["data"][i] / max), 0 )
-            attr["y"] = 10 + renderHeight - attr["height"] + 0.5
+            attr["x"] = options["x"] + attr["width"] * i + (5 * i)
+            attr["height"] = Round( svgHeight * (dataset["data"][i] / max), 0 )
+            attr["y"] = svgHeight - attr["height"]
             component = component + BuildElement("rect", attr, "")
             i = i + 1
         }
@@ -62,7 +61,6 @@ module Rafaello {
         int32 i 
         int32 max
         int32 min
-        int32 renderHeight = svgHeight - 10
 
         // initialize default values
 
@@ -132,23 +130,23 @@ module Rafaello {
             // body
 
             if (datasets[0]["data"][i] < datasets[3]["data"][i]) {
-                attr["y"] = 10 + renderHeight - Round( renderHeight * ((datasets[3]["data"][i] - min) / (max - min)), 0 ) + 0.5
-                attr["height"] = renderHeight * (datasets[3]["data"][i] - datasets[0]["data"][i]) / (max - min)
+                attr["y"] = svgHeight - Round( svgHeight * ((datasets[3]["data"][i] - min) / (max - min)), 0 )
+                attr["height"] = svgHeight * (datasets[3]["data"][i] - datasets[0]["data"][i]) / (max - min)
                 attr["fill"] = "#00cc00"
                 attr["stroke"] = "#004000"         
             } else {
-                attr["y"] = 10 + renderHeight - Round( renderHeight * ((datasets[0]["data"][i] - min) / (max - min)), 0 ) + 0.5
-                attr["height"] = renderHeight * (datasets[0]["data"][i] - datasets[3]["data"][i]) / (max - min)     
+                attr["y"] = svgHeight - Round( svgHeight * ((datasets[0]["data"][i] - min) / (max - min)), 0 )
+                attr["height"] = svgHeight * (datasets[0]["data"][i] - datasets[3]["data"][i]) / (max - min)     
                 attr["fill"] = "#cc0000"
                 attr["stroke"] = "#400000"    
             }
 
-            lineAttr["y1"] = 10 + renderHeight - Round( renderHeight * ((datasets[1]["data"][i] - min) / (max - min)), 0 ) + 0.5   
+            lineAttr["y1"] = svgHeight - Round( svgHeight * ((datasets[1]["data"][i] - min) / (max - min)), 0 ) 
             lineAttr["y2"] = attr["y"]
             component = component + BuildElement("line", lineAttr, "") 
             
             lineAttr["y1"] = attr["y"] + attr["height"]
-            lineAttr["y2"] = 10 + renderHeight - Round( renderHeight * ((datasets[2]["data"][i] - min) / (max - min)), 0 ) + 0.5   
+            lineAttr["y2"] = svgHeight - Round( svgHeight * ((datasets[2]["data"][i] - min) / (max - min)), 0 )  
             component = component + BuildElement("line", lineAttr, "")                 
 
             component = component + BuildElement("rect", attr, "")            
@@ -171,7 +169,6 @@ module Rafaello {
         string path
         int32 pointWidth
         int32 tmpHeight
-        int32 renderHeight = svgHeight - 10
 
         // initialize default values
 
@@ -206,9 +203,9 @@ module Rafaello {
         path = "M"
         i = 0
         while i < points {       
-            path = path + Str(options["x"] + pointWidth * i + pointWidth * 0.5 + (5 * i) + 0.5)
-            tmpHeight = Round( renderHeight * (dataset["data"][i] / max), 0 )
-            path = path + " " + Str(10 + renderHeight - tmpHeight + 0.5)
+            path = path + Str(options["x"] + pointWidth * i + pointWidth * 0.5 + (5 * i))
+            tmpHeight = Round( svgHeight * (dataset["data"][i] / max), 0 )
+            path = path + " " + Str(svgHeight - tmpHeight)
             i = i + 1
             if i < points {
                 path = path + " "
@@ -235,7 +232,6 @@ module Rafaello {
         int32 step
         string tmpStr
         int32 scaleWidth 
-        int32 renderHeight = svgHeight - 10
 
         // initialize default values
 
@@ -256,10 +252,10 @@ module Rafaello {
             
             case "left" {
 
-                step = renderHeight / (points - 1)
+                step = svgHeight / (points - 1)
 
                 lineAttr = ParseJSON("{}")
-                lineAttr["y1"] = 10
+                lineAttr["y1"] = 0
                 lineAttr["y2"] = svgHeight + 1
                 lineAttr["stroke"] = "#000000"
                 lineAttr["stroke-width"] = 1
@@ -277,11 +273,11 @@ module Rafaello {
                 textAttr["x"] = options["x"] 
                 lineAttr["x1"] = options["x"] + scaleWidth + 5
                 lineAttr["x2"] = options["x"] + scaleWidth + 10
-                y = 10 + renderHeight
+                y = svgHeight
                 i = 0
                 while i < points {         
-                    lineAttr["y1"] = y + 0.5                
-                    lineAttr["y2"] = y + 0.5
+                    lineAttr["y1"] = y               
+                    lineAttr["y2"] = y
                     component = component + BuildElement("line", lineAttr, "")
                 
                     textAttr["y"] = y
@@ -295,18 +291,18 @@ module Rafaello {
 
             case "right" {
 
-                step = renderHeight / (points - 1)
+                step = svgHeight / (points - 1)
 
                 lineAttr = ParseJSON("{}")
-                lineAttr["y1"] = 10
+                lineAttr["y1"] = 0
                 lineAttr["y2"] = svgHeight + 1
                 lineAttr["stroke"] = "#000000"
                 lineAttr["stroke-width"] = 1
 
                 // draw vertical line
 
-                lineAttr["x1"] = options["x"] + 0.5
-                lineAttr["x2"] = options["x"] + 0.5
+                lineAttr["x1"] = options["x"]
+                lineAttr["x2"] = options["x"]
 
                 component = component + BuildElement("line", lineAttr, "")
 
@@ -317,11 +313,11 @@ module Rafaello {
                 textAttr["x"] = options["x"] + 9
                 lineAttr["x1"] = options["x"] 
                 lineAttr["x2"] = options["x"] + 5
-                y = 10 + renderHeight
+                y = svgHeight
                 i = 0
                 while i < points {
-                    lineAttr["y1"] = y + 0.5
-                    lineAttr["y2"] = y + 0.5
+                    lineAttr["y1"] = y
+                    lineAttr["y2"] = y
                     component = component + BuildElement("line", lineAttr, "")
                 
                     textAttr["y"] = y
@@ -362,8 +358,8 @@ module Rafaello {
                 x = 0
                 i = 0
                 while i < points {         
-                    lineAttr["x1"] = x + 0.5                
-                    lineAttr["x2"] = x + 0.5
+                    lineAttr["x1"] = x               
+                    lineAttr["x2"] = x
                     component = component + BuildElement("line", lineAttr, "")
                 
                     textAttr["x"] = x
