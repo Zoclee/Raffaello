@@ -268,6 +268,47 @@
         scaleWidth = (tmpStr.length * 7);
 
         switch (options['align']) {
+            case "bottom":
+
+                step = (svgWidth / (points - 1));
+
+                lineAttr = JSON.parse('{}');
+                lineAttr['x1'] = 0;
+                lineAttr['x2'] = svgWidth;
+                lineAttr['stroke'] = '#000000';
+                lineAttr['stroke-width'] = 1;
+
+                // draw horizontal line
+
+                lineAttr['y1'] = (options['y'] + 0);
+                lineAttr['y2'] = (options['y'] + 0);
+                component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+                // draw scale items
+
+                textAttr = JSON.parse('{}');
+                textAttr['fill'] = '#000000';
+                textAttr['y'] = (options['y'] + 18);
+                textAttr['text-anchor'] = 'middle';
+
+                lineAttr['y1'] = (options['y'] + 0);
+                lineAttr['y2'] = (options['y'] + 5);
+
+                x = 0;
+                i = 0;
+                while ((i < points)) {
+                    lineAttr['x1'] = x;
+                    lineAttr['x2'] = x;
+                    component = (component + Rafaello.BuildElement('line', lineAttr, ''));
+
+                    textAttr['x'] = x;
+                    component = (component + Rafaello.BuildElement('text', textAttr, (dataset['data'][i]).toString()));
+
+                    x = (x + step);
+                    i = (i + 1);
+                }
+
+                break;
             case "left":
 
                 step = (svgHeight / (points - 1));
@@ -280,8 +321,8 @@
 
                 // draw vertical line
 
-                lineAttr['x1'] = ((options['x'] + scaleWidth) + 10.5);
-                lineAttr['x2'] = ((options['x'] + scaleWidth) + 10.5);
+                lineAttr['x1'] = ((options['x'] + scaleWidth) + 10);
+                lineAttr['x2'] = ((options['x'] + scaleWidth) + 10);
                 component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                 // draw scale items
@@ -357,8 +398,8 @@
 
                 // draw horizontal line
 
-                lineAttr['y1'] = (options['y'] + 18);
-                lineAttr['y2'] = (options['y'] + 18);
+                lineAttr['y1'] = (options['y'] + 19);
+                lineAttr['y2'] = (options['y'] + 19);
                 component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
                 // draw scale items
@@ -369,7 +410,7 @@
                 textAttr['text-anchor'] = 'middle';
 
                 lineAttr['y1'] = (options['y'] + 14);
-                lineAttr['y2'] = (options['y'] + 18);
+                lineAttr['y2'] = (options['y'] + 19);
 
                 x = 0;
                 i = 0;
