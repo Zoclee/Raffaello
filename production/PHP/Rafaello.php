@@ -169,6 +169,76 @@ class Rafaello {
         return $component;
     }
 
+    // ***** HeatMap ********************
+
+    public static function HeatMap($svgWidth, $svgHeight, $dataset, $options) {
+        $component = "";
+        $attr = json_decode("{}");
+        $points = 0;
+        $i = 0;
+        $max = 0;
+        $min = 0;
+        $value = floatval(0);
+
+        // initialize default values
+
+        if (!(property_exists($options, "x"))) {
+            $options->{"x"} = 0;
+        }
+        if (!(property_exists($options, "width"))) {
+            $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+
+        // determine maximum height
+
+        $points = count($dataset->{"data"});
+
+        $max = 100;
+        $min = 0;
+        /*max = dataset["data"][0]
+        min = dataset["data"][0]
+        i = 1
+        while i < points {
+            if dataset["data"][i] > max {
+               max = dataset["data"][i]
+            }
+            if dataset["data"][i] < min {
+               min = dataset["data"][i]
+            }            
+            i = i + 1
+        }*/
+
+        // configure styling attributes
+
+        $attr = json_decode("{}");
+        $attr->{"width"} = intval(floor($options->{"width"} / $points));
+        $attr->{"height"} = $svgHeight;
+        $attr->{"stroke-width"} = 1;
+        $attr->{"y"} = 0;
+
+        // create bars
+
+        $i = 0;
+        while (($i < $points)) {
+            $attr->{"x"} = ($options->{"x"} + ($attr->{"width"} * $i));
+            $value = (($dataset->{"data"}[$i] - $min) / ($max - $min));
+            if (($value >= 0.75)) {
+                $attr->{"fill"} = "#00aa00";
+                $attr->{"stroke"} = "#00aa00";
+            } else if (($value >= 0.25)) {
+                $attr->{"fill"} = "#aaaa00";
+                $attr->{"stroke"} = "#aaaa00";
+            } else {
+                $attr->{"fill"} = "#aa0000";
+                $attr->{"stroke"} = "#aa0000";
+            }
+            $component = ($component . self::BuildElement("rect", $attr, ""));
+            $i = ($i + 1);
+        }
+
+        return $component;
+    }
+
     // ***** LineGraph ********************
 
     public static function LineGraph($svgWidth, $svgHeight, $dataset, $options) {
@@ -504,6 +574,9 @@ class Rafaello {
                     break;
                 case "bargraph":
                     $composition = ($composition . self::BarGraph(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
+                    break;
+                case "heatmap":
+                    $composition = ($composition . self::HeatMap(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
                     break;
                 case "linegraph":
                     $composition = ($composition . self::LineGraph(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));

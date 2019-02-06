@@ -167,6 +167,76 @@
         return component;
     }
 
+    // ***** HeatMap ********************
+
+    Rafaello.HeatMap = function (svgWidth, svgHeight, dataset, options) {
+        var component = '';
+        var attr = JSON.parse('{}');
+        var points = 0;
+        var i = 0;
+        var max = 0;
+        var min = 0;
+        var value = 0;
+
+        // initialize default values
+
+        if (!(options.hasOwnProperty('x'))) {
+            options['x'] = 0;
+        }
+        if (!(options.hasOwnProperty('width'))) {
+            options['width'] = (svgWidth - options['x']);
+        }
+
+        // determine maximum height
+
+        points = Object.keys(dataset['data']).length;
+
+        max = 100;
+        min = 0;
+        /*max = dataset["data"][0]
+        min = dataset["data"][0]
+        i = 1
+        while i < points {
+            if dataset["data"][i] > max {
+               max = dataset["data"][i]
+            }
+            if dataset["data"][i] < min {
+               min = dataset["data"][i]
+            }            
+            i = i + 1
+        }*/
+
+        // configure styling attributes
+
+        attr = JSON.parse('{}');
+        attr['width'] = parseInt(Math.floor(options['width'] / points));
+        attr['height'] = svgHeight;
+        attr['stroke-width'] = 1;
+        attr['y'] = 0;
+
+        // create bars
+
+        i = 0;
+        while ((i < points)) {
+            attr['x'] = (options['x'] + (attr['width'] * i));
+            value = ((dataset['data'][i] - min) / (max - min));
+            if ((value >= 0.75)) {
+                attr['fill'] = '#00aa00';
+                attr['stroke'] = '#00aa00';
+            } else if ((value >= 0.25)) {
+                attr['fill'] = '#aaaa00';
+                attr['stroke'] = '#aaaa00';
+            } else {
+                attr['fill'] = '#aa0000';
+                attr['stroke'] = '#aa0000';
+            }
+            component = (component + Rafaello.BuildElement('rect', attr, ''));
+            i = (i + 1);
+        }
+
+        return component;
+    }
+
     // ***** LineGraph ********************
 
     Rafaello.LineGraph = function (svgWidth, svgHeight, dataset, options) {
@@ -502,6 +572,9 @@
                     break;
                 case "bargraph":
                     composition = (composition + Rafaello.BarGraph((svgWidth - 1), (svgHeight - 1), dataset, options));
+                    break;
+                case "heatmap":
+                    composition = (composition + Rafaello.HeatMap((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
                 case "linegraph":
                     composition = (composition + Rafaello.LineGraph((svgWidth - 1), (svgHeight - 1), dataset, options));

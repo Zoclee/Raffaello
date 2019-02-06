@@ -158,6 +158,72 @@ module Rafaello {
         return component
     }
 
+    // ***** HeatMap ********************
+
+    method string HeatMap(int32 svgWidth, int32 svgHeight, json dataset, json options) {
+        string component
+        json attr
+        int32 points
+        int32 i 
+        int32 max
+        int32 min
+        double value
+
+        // initialize default values
+
+        if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
+
+        // determine maximum height
+
+        points = count(dataset["data"])
+
+        max = 100
+        min = 0
+        /*max = dataset["data"][0]
+        min = dataset["data"][0]
+        i = 1
+        while i < points {
+            if dataset["data"][i] > max {
+               max = dataset["data"][i]
+            }
+            if dataset["data"][i] < min {
+               min = dataset["data"][i]
+            }            
+            i = i + 1
+        }*/
+
+        // configure styling attributes
+
+        attr = ParseJSON("{}")
+        attr["width"] = options["width"] \ points
+        attr["height"] = svgHeight        
+        attr["stroke-width"] = 1        
+        attr["y"] = 0
+
+        // create bars
+
+        i = 0
+        while i < points {
+            attr["x"] = options["x"] + attr["width"] * i
+            value = (dataset["data"][i] - min) / (max - min)
+            if value >= 0.75 {
+                attr["fill"] = "#00aa00"
+                attr["stroke"] = "#00aa00"
+            } elseif value >= 0.25 {
+                attr["fill"] = "#aaaa00"    
+                attr["stroke"] = "#aaaa00"            
+            } else {
+                attr["fill"] = "#aa0000"
+                attr["stroke"] = "#aa0000"
+            }
+            component = component + BuildElement("rect", attr, "")
+            i = i + 1
+        }
+
+        return component
+    }
+
    // ***** LineGraph ********************
 
     method string LineGraph(int32 svgWidth, int32 svgHeight, json dataset, json options) {
@@ -489,6 +555,9 @@ module Rafaello {
                 case "bargraph" {                                       
                     composition = composition + BarGraph(svgWidth - 1, svgHeight - 1, dataset, options)
                 }
+                case "heatmap" {                                       
+                    composition = composition + HeatMap(svgWidth - 1, svgHeight - 1, dataset, options)
+                }                
                 case "linegraph" {                                       
                     composition = composition + LineGraph(svgWidth - 1, svgHeight - 1, dataset, options)
                 }                
