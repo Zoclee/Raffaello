@@ -92,7 +92,15 @@
                 <td width="20px">&nbsp;</td>
                 <td>{"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"heatmap"}]}</td>
             </tr>
-        </table>		
+        </table>
+        <hr>
+        <table>
+            <tr valign="top">
+                <td><div id="chart10"></div></td>
+                <td width="20px">&nbsp;</td>
+                <td>{"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]},{"data":[70, 80, 90, 100, 110, 120, 130, 140]}], "components":[{"type":"candlestickgraph","options":{"width":260}}, {"type":"scale","dataset":4,"options":{"x":265,"align":"right"}}]}</td>
+            </tr>
+        </table>	        		
     </body>
 </html>
 <script>
@@ -130,5 +138,8 @@
     document.getElementById('chart8').appendChild(dom.documentElement);    
 
     dom = parser.parseFromString(Rafaello.Render(300, 50, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"heatmap"}]}), "text/xml");
-    document.getElementById('chart9').appendChild(dom.documentElement);   	
+    document.getElementById('chart9').appendChild(dom.documentElement);  
+    
+    dom = parser.parseFromString(Rafaello.Render(640, 480, {"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]},{"data":[70, 80, 90, 100, 110, 120, 130, 140]},{"data":[0, 50, 100]}], "components":[{"type":"candlestickgraph","options":{"width":600, "height":600}}, {"type":"scale","dataset":4,"options":{"x":605, "height":600,"align":"right"}}, {"type":"heatmap","dataset":5,"options":{"width":600, "y":605, "height":35}}]}), "text/xml");
+    document.getElementById('chart10').appendChild(dom.documentElement);    
 </script>
