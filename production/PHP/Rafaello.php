@@ -329,6 +329,12 @@ class Rafaello {
         if (!(property_exists($options, "y"))) {
             $options->{"y"} = 0;
         }
+        if (!(property_exists($options, "width"))) {
+            $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+        if (!(property_exists($options, "height"))) {
+            $options->{"height"} = ($svgHeight - $options->{"y"});
+        }
 
         // determine step
 
@@ -342,11 +348,11 @@ class Rafaello {
         switch ($options->{"align"}) {
             case "bottom":
 
-                $step = ($svgWidth / ($points - 1));
+                $step = ($options->{"width"} / ($points - 1));
 
                 $lineAttr = json_decode("{}");
                 $lineAttr->{"x1"} = 0;
-                $lineAttr->{"x2"} = $svgWidth;
+                $lineAttr->{"x2"} = $options->{"width"};
                 $lineAttr->{"stroke"} = "#000000";
                 $lineAttr->{"stroke-width"} = 1;
 
@@ -383,11 +389,11 @@ class Rafaello {
                 break;
             case "left":
 
-                $step = ($svgHeight / ($points - 1));
+                $step = ($options->{"height"} / ($points - 1));
 
                 $lineAttr = json_decode("{}");
                 $lineAttr->{"y1"} = 0;
-                $lineAttr->{"y2"} = ($svgHeight + 1);
+                $lineAttr->{"y2"} = $options->{"height"};
                 $lineAttr->{"stroke"} = "#000000";
                 $lineAttr->{"stroke-width"} = 1;
 
@@ -404,7 +410,7 @@ class Rafaello {
                 $textAttr->{"x"} = $options->{"x"};
                 $lineAttr->{"x1"} = (($options->{"x"} + $scaleWidth) + 5);
                 $lineAttr->{"x2"} = (($options->{"x"} + $scaleWidth) + 10);
-                $y = $svgHeight;
+                $y = $options->{"height"};
                 $i = 0;
                 while (($i < $points)) {
                     $lineAttr->{"y1"} = $y;
@@ -421,11 +427,11 @@ class Rafaello {
                 break;
             case "right":
 
-                $step = ($svgHeight / ($points - 1));
+                $step = ($options->{"height"} / ($points - 1));
 
                 $lineAttr = json_decode("{}");
                 $lineAttr->{"y1"} = 0;
-                $lineAttr->{"y2"} = ($svgHeight + 1);
+                $lineAttr->{"y2"} = $options->{"height"};
                 $lineAttr->{"stroke"} = "#000000";
                 $lineAttr->{"stroke-width"} = 1;
 
@@ -443,7 +449,7 @@ class Rafaello {
                 $textAttr->{"x"} = ($options->{"x"} + 9);
                 $lineAttr->{"x1"} = $options->{"x"};
                 $lineAttr->{"x2"} = ($options->{"x"} + 5);
-                $y = $svgHeight;
+                $y = $options->{"height"};
                 $i = 0;
                 while (($i < $points)) {
                     $lineAttr->{"y1"} = $y;
@@ -460,11 +466,11 @@ class Rafaello {
                 break;
             case "top":
 
-                $step = ($svgWidth / ($points - 1));
+                $step = ($options->{"width"} / ($points - 1));
 
                 $lineAttr = json_decode("{}");
                 $lineAttr->{"x1"} = 0;
-                $lineAttr->{"x2"} = $svgWidth;
+                $lineAttr->{"x2"} = $options->{"width"};
                 $lineAttr->{"stroke"} = "#000000";
                 $lineAttr->{"stroke-width"} = 1;
 
