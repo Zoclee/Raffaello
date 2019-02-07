@@ -74,8 +74,14 @@ class Rafaello {
         if (!(property_exists($options, "x"))) {
             $options->{"x"} = 0;
         }
+        if (!(property_exists($options, "y"))) {
+            $options->{"y"} = 0;
+        }
         if (!(property_exists($options, "width"))) {
             $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+        if (!(property_exists($options, "height"))) {
+            $options->{"height"} = ($svgHeight - $options->{"y"});
         }
 
         // determine maximum height
@@ -141,23 +147,23 @@ class Rafaello {
             // body
 
             if (($datasets[0]->{"data"}[$i] < $datasets[3]->{"data"}[$i])) {
-                $attr->{"y"} = ($svgHeight - round(($svgHeight * (($datasets[3]->{"data"}[$i] - $min) / ($max - $min))), 0));
-                $attr->{"height"} = ($svgHeight * (($datasets[3]->{"data"}[$i] - $datasets[0]->{"data"}[$i]) / ($max - $min)));
+                $attr->{"y"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[3]->{"data"}[$i] - $min) / ($max - $min))), 0));
+                $attr->{"height"} = ($options->{"height"} * (($datasets[3]->{"data"}[$i] - $datasets[0]->{"data"}[$i]) / ($max - $min)));
                 $attr->{"fill"} = "#00cc00";
                 $attr->{"stroke"} = "#004000";
             } else {
-                $attr->{"y"} = ($svgHeight - round(($svgHeight * (($datasets[0]->{"data"}[$i] - $min) / ($max - $min))), 0));
-                $attr->{"height"} = ($svgHeight * (($datasets[0]->{"data"}[$i] - $datasets[3]->{"data"}[$i]) / ($max - $min)));
+                $attr->{"y"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[0]->{"data"}[$i] - $min) / ($max - $min))), 0));
+                $attr->{"height"} = ($options->{"height"} * (($datasets[0]->{"data"}[$i] - $datasets[3]->{"data"}[$i]) / ($max - $min)));
                 $attr->{"fill"} = "#cc0000";
                 $attr->{"stroke"} = "#400000";
             }
 
-            $lineAttr->{"y1"} = ($svgHeight - round(($svgHeight * (($datasets[1]->{"data"}[$i] - $min) / ($max - $min))), 0));
+            $lineAttr->{"y1"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[1]->{"data"}[$i] - $min) / ($max - $min))), 0));
             $lineAttr->{"y2"} = $attr->{"y"};
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $lineAttr->{"y1"} = ($attr->{"y"} + $attr->{"height"});
-            $lineAttr->{"y2"} = ($svgHeight - round(($svgHeight * (($datasets[2]->{"data"}[$i] - $min) / ($max - $min))), 0));
+            $lineAttr->{"y2"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[2]->{"data"}[$i] - $min) / ($max - $min))), 0));
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $component = ($component . self::BuildElement("rect", $attr, ""));
@@ -185,8 +191,14 @@ class Rafaello {
         if (!(property_exists($options, "x"))) {
             $options->{"x"} = 0;
         }
+        if (!(property_exists($options, "y"))) {
+            $options->{"y"} = 0;
+        }
         if (!(property_exists($options, "width"))) {
             $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+        if (!(property_exists($options, "height"))) {
+            $options->{"height"} = ($svgHeight - $options->{"y"});
         }
 
         // determine maximum height
@@ -195,26 +207,14 @@ class Rafaello {
 
         $max = 100;
         $min = 0;
-        /*max = dataset["data"][0]
-        min = dataset["data"][0]
-        i = 1
-        while i < points {
-            if dataset["data"][i] > max {
-               max = dataset["data"][i]
-            }
-            if dataset["data"][i] < min {
-               min = dataset["data"][i]
-            }            
-            i = i + 1
-        }*/
 
         // configure styling attributes
 
         $attr = json_decode("{}");
         $attr->{"width"} = intval(floor($options->{"width"} / $points));
-        $attr->{"height"} = $svgHeight;
+        $attr->{"height"} = $options->{"height"};
         $attr->{"stroke-width"} = 1;
-        $attr->{"y"} = 0;
+        $attr->{"y"} = $options->{"y"};
 
         // create bars
 
