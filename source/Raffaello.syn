@@ -172,7 +172,9 @@ module Rafaello {
         // initialize default values
 
         if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("y") { options["y"] = 0 }
         if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
+        if not options.HasKey("height") { options["height"] = svgHeight - options["y"] }
 
         // determine maximum height
 
@@ -197,7 +199,7 @@ module Rafaello {
 
         attr = ParseJSON("{}")
         attr["width"] = options["width"] \ points
-        attr["height"] = svgHeight        
+        attr["height"] = options["height"]        
         attr["stroke-width"] = 1        
         attr["y"] = 0
 

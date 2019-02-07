@@ -183,8 +183,14 @@
         if (!(options.hasOwnProperty('x'))) {
             options['x'] = 0;
         }
+        if (!(options.hasOwnProperty('y'))) {
+            options['y'] = 0;
+        }
         if (!(options.hasOwnProperty('width'))) {
             options['width'] = (svgWidth - options['x']);
+        }
+        if (!(options.hasOwnProperty('height'))) {
+            options['height'] = (svgHeight - options['y']);
         }
 
         // determine maximum height
@@ -210,7 +216,7 @@
 
         attr = JSON.parse('{}');
         attr['width'] = parseInt(Math.floor(options['width'] / points));
-        attr['height'] = svgHeight;
+        attr['height'] = options['height'];
         attr['stroke-width'] = 1;
         attr['y'] = 0;
 
