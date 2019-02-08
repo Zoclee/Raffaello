@@ -56,7 +56,7 @@ class Rafaello {
         while (($i < $points)) {
             $attr->{"x"} = (($options->{"x"} + ($attr->{"width"} * $i)) + (5 * $i));
             $attr->{"height"} = round(($options->{"height"} * ($dataset->{"data"}[$i] / $max)), 0);
-            $attr->{"y"} = ($options->{"height"} - $attr->{"height"});
+            $attr->{"y"} = (($options->{"y"} + $options->{"height"}) - $attr->{"height"});
             $component = ($component . self::BuildElement("rect", $attr, ""));
             $i = ($i + 1);
         }
@@ -173,7 +173,6 @@ class Rafaello {
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $component = ($component . self::BuildElement("rect", $attr, ""));
-
 
             $i = ($i + 1);
         }

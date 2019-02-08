@@ -54,7 +54,7 @@
         while ((i < points)) {
             attr['x'] = ((options['x'] + (attr['width'] * i)) + (5 * i));
             attr['height'] = (Math.round((options['height'] * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            attr['y'] = (options['height'] - attr['height']);
+            attr['y'] = ((options['y'] + options['height']) - attr['height']);
             component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
         }
@@ -171,7 +171,6 @@
             component = (component + Rafaello.BuildElement('line', lineAttr, ''));
 
             component = (component + Rafaello.BuildElement('rect', attr, ''));
-
 
             i = (i + 1);
         }
