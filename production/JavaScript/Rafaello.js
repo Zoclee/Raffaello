@@ -391,7 +391,7 @@
 
                 lineAttr = JSON.parse('{}');
                 lineAttr['y1'] = 0;
-                lineAttr['y2'] = options['height'];
+                lineAttr['y2'] = (options['y'] + options['height']);
                 lineAttr['stroke'] = '#000000';
                 lineAttr['stroke-width'] = 1;
 
@@ -408,7 +408,7 @@
                 textAttr['x'] = options['x'];
                 lineAttr['x1'] = ((options['x'] + scaleWidth) + 5);
                 lineAttr['x2'] = ((options['x'] + scaleWidth) + 10);
-                y = options['height'];
+                y = (options['y'] + options['height']);
                 i = 0;
                 while ((i < points)) {
                     lineAttr['y1'] = y;
@@ -428,8 +428,8 @@
                 step = (options['height'] / (points - 1));
 
                 lineAttr = JSON.parse('{}');
-                lineAttr['y1'] = 0;
-                lineAttr['y2'] = options['height'];
+                lineAttr['y1'] = options['y'];
+                lineAttr['y2'] = (options['y'] + options['height']);
                 lineAttr['stroke'] = '#000000';
                 lineAttr['stroke-width'] = 1;
 
@@ -447,7 +447,7 @@
                 textAttr['x'] = (options['x'] + 9);
                 lineAttr['x1'] = options['x'];
                 lineAttr['x2'] = (options['x'] + 5);
-                y = options['height'];
+                y = (options['y'] + options['height']);
                 i = 0;
                 while ((i < points)) {
                     lineAttr['y1'] = y;
