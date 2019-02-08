@@ -147,23 +147,23 @@ class Rafaello {
             // body
 
             if (($datasets[0]->{"data"}[$i] < $datasets[3]->{"data"}[$i])) {
-                $attr->{"y"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[3]->{"data"}[$i] - $min) / ($max - $min))), 0));
+                $attr->{"y"} = (($options->{"y"} + $options->{"height"}) - round(($options->{"height"} * (($datasets[3]->{"data"}[$i] - $min) / ($max - $min))), 0));
                 $attr->{"height"} = ($options->{"height"} * (($datasets[3]->{"data"}[$i] - $datasets[0]->{"data"}[$i]) / ($max - $min)));
                 $attr->{"fill"} = "#00cc00";
                 $attr->{"stroke"} = "#004000";
             } else {
-                $attr->{"y"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[0]->{"data"}[$i] - $min) / ($max - $min))), 0));
+                $attr->{"y"} = (($options->{"y"} + $options->{"height"}) - round(($options->{"height"} * (($datasets[0]->{"data"}[$i] - $min) / ($max - $min))), 0));
                 $attr->{"height"} = ($options->{"height"} * (($datasets[0]->{"data"}[$i] - $datasets[3]->{"data"}[$i]) / ($max - $min)));
                 $attr->{"fill"} = "#cc0000";
                 $attr->{"stroke"} = "#400000";
             }
 
-            $lineAttr->{"y1"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[1]->{"data"}[$i] - $min) / ($max - $min))), 0));
+            $lineAttr->{"y1"} = (($options->{"y"} + $options->{"height"}) - round(($options->{"height"} * (($datasets[1]->{"data"}[$i] - $min) / ($max - $min))), 0));
             $lineAttr->{"y2"} = $attr->{"y"};
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $lineAttr->{"y1"} = ($attr->{"y"} + $attr->{"height"});
-            $lineAttr->{"y2"} = ($options->{"height"} - round(($options->{"height"} * (($datasets[2]->{"data"}[$i] - $min) / ($max - $min))), 0));
+            $lineAttr->{"y2"} = (($options->{"y"} + $options->{"height"}) - round(($options->{"height"} * (($datasets[2]->{"data"}[$i] - $min) / ($max - $min))), 0));
             $component = ($component . self::BuildElement("line", $lineAttr, ""));
 
             $component = ($component . self::BuildElement("rect", $attr, ""));
