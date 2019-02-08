@@ -17,8 +17,14 @@ class Rafaello {
         if (!(property_exists($options, "x"))) {
             $options->{"x"} = 0;
         }
+        if (!(property_exists($options, "y"))) {
+            $options->{"y"} = 0;
+        }
         if (!(property_exists($options, "width"))) {
             $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+        if (!(property_exists($options, "height"))) {
+            $options->{"height"} = ($svgHeight - $options->{"y"});
         }
 
         // determine maximum height
@@ -49,8 +55,8 @@ class Rafaello {
         $i = 0;
         while (($i < $points)) {
             $attr->{"x"} = (($options->{"x"} + ($attr->{"width"} * $i)) + (5 * $i));
-            $attr->{"height"} = round(($svgHeight * ($dataset->{"data"}[$i] / $max)), 0);
-            $attr->{"y"} = ($svgHeight - $attr->{"height"});
+            $attr->{"height"} = round(($options->{"height"} * ($dataset->{"data"}[$i] / $max)), 0);
+            $attr->{"y"} = ($options->{"height"} - $attr->{"height"});
             $component = ($component . self::BuildElement("rect", $attr, ""));
             $i = ($i + 1);
         }

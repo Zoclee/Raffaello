@@ -15,8 +15,14 @@
         if (!(options.hasOwnProperty('x'))) {
             options['x'] = 0;
         }
+        if (!(options.hasOwnProperty('y'))) {
+            options['y'] = 0;
+        }
         if (!(options.hasOwnProperty('width'))) {
             options['width'] = (svgWidth - options['x']);
+        }
+        if (!(options.hasOwnProperty('height'))) {
+            options['height'] = (svgHeight - options['y']);
         }
 
         // determine maximum height
@@ -47,8 +53,8 @@
         i = 0;
         while ((i < points)) {
             attr['x'] = ((options['x'] + (attr['width'] * i)) + (5 * i));
-            attr['height'] = (Math.round((svgHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            attr['y'] = (svgHeight - attr['height']);
+            attr['height'] = (Math.round((options['height'] * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
+            attr['y'] = (options['height'] - attr['height']);
             component = (component + Rafaello.BuildElement('rect', attr, ''));
             i = (i + 1);
         }

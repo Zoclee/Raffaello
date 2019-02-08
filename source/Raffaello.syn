@@ -12,7 +12,9 @@ module Rafaello {
         // initialize default values
 
         if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("y") { options["y"] = 0 }
         if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
+        if not options.HasKey("height") { options["height"] = svgHeight - options["y"] }
 
         // determine maximum height
 
@@ -42,8 +44,8 @@ module Rafaello {
         i = 0
         while i < points {
             attr["x"] = options["x"] + attr["width"] * i + (5 * i)
-            attr["height"] = Round( svgHeight * (dataset["data"][i] / max), 0 )
-            attr["y"] = svgHeight - attr["height"]
+            attr["height"] = Round( options["height"] * (dataset["data"][i] / max), 0 )
+            attr["y"] = options["height"] - attr["height"]
             component = component + BuildElement("rect", attr, "")
             i = i + 1
         }
@@ -151,9 +153,8 @@ module Rafaello {
             lineAttr["y2"] = options["y"] + options["height"] - Round( options["height"] * ((datasets[2]["data"][i] - min) / (max - min)), 0 )  
             component = component + BuildElement("line", lineAttr, "")                 
 
-            component = component + BuildElement("rect", attr, "")            
+            component = component + BuildElement("rect", attr, "") 
             
-
             i = i + 1
         }
 
