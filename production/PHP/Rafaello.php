@@ -252,6 +252,7 @@ class Rafaello {
         $points = 0;
         $i = 0;
         $max = 0;
+        $min = 0;
         $path = "";
         $pointWidth = 0;
         $tmpHeight = 0;
@@ -261,21 +262,38 @@ class Rafaello {
         if (!(property_exists($options, "x"))) {
             $options->{"x"} = 0;
         }
+        if (!(property_exists($options, "y"))) {
+            $options->{"y"} = 0;
+        }
         if (!(property_exists($options, "width"))) {
             $options->{"width"} = ($svgWidth - $options->{"x"});
         }
+        if (!(property_exists($options, "height"))) {
+            $options->{"height"} = ($svgHeight - $options->{"y"});
+        }
 
-        // determine maximum height
+        // determine min max valuesmaximum height
 
         $points = count($dataset->{"data"});
 
         $max = $dataset->{"data"}[0];
+        $min = $dataset->{"data"}[0];
         $i = 1;
         while (($i < $points)) {
             if (($dataset->{"data"}[$i] > $max)) {
                 $max = $dataset->{"data"}[$i];
             }
+            if (($dataset->{"data"}[$i] < $min)) {
+                $min = $dataset->{"data"}[$i];
+            }
             $i = ($i + 1);
+        }
+
+        if (!(property_exists($options, "min"))) {
+            $options->{"min"} = $min;
+        }
+        if (!(property_exists($options, "max"))) {
+            $options->{"max"} = $max;
         }
 
         // configure styling attributes
@@ -294,8 +312,8 @@ class Rafaello {
         $i = 0;
         while (($i < $points)) {
             $path = ($path . (string)(((($options->{"x"} + ($pointWidth * $i)) + ($pointWidth * 0.5)) + (5 * $i))));
-            $tmpHeight = round(($svgHeight * ($dataset->{"data"}[$i] / $max)), 0);
-            $path = (($path . " ") . (string)(($svgHeight - $tmpHeight)));
+            $tmpHeight = round(($options->{"height"} * (($dataset->{"data"}[$i] - $options->{"min"}) / ($options->{"max"} - $options->{"min"}))), 0);
+            $path = (($path . " ") . (string)((($options->{"y"} + $options->{"height"}) - $tmpHeight)));
             $i = ($i + 1);
             if (($i < $points)) {
                 $path = ($path . " ");

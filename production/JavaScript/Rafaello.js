@@ -250,6 +250,7 @@
         var points = 0;
         var i = 0;
         var max = 0;
+        var min = 0;
         var path = '';
         var pointWidth = 0;
         var tmpHeight = 0;
@@ -259,21 +260,38 @@
         if (!(options.hasOwnProperty('x'))) {
             options['x'] = 0;
         }
+        if (!(options.hasOwnProperty('y'))) {
+            options['y'] = 0;
+        }
         if (!(options.hasOwnProperty('width'))) {
             options['width'] = (svgWidth - options['x']);
         }
+        if (!(options.hasOwnProperty('height'))) {
+            options['height'] = (svgHeight - options['y']);
+        }
 
-        // determine maximum height
+        // determine min max valuesmaximum height
 
         points = Object.keys(dataset['data']).length;
 
         max = dataset['data'][0];
+        min = dataset['data'][0];
         i = 1;
         while ((i < points)) {
             if ((dataset['data'][i] > max)) {
                 max = dataset['data'][i];
             }
+            if ((dataset['data'][i] < min)) {
+                min = dataset['data'][i];
+            }
             i = (i + 1);
+        }
+
+        if (!(options.hasOwnProperty('min'))) {
+            options['min'] = min;
+        }
+        if (!(options.hasOwnProperty('max'))) {
+            options['max'] = max;
         }
 
         // configure styling attributes
@@ -292,8 +310,8 @@
         i = 0;
         while ((i < points)) {
             path = (path + ((((options['x'] + (pointWidth * i)) + (pointWidth * 0.5)) + (5 * i))).toString());
-            tmpHeight = (Math.round((svgHeight * (dataset['data'][i] / max)) * Math.pow(10, 0)) / Math.pow(10, 0));
-            path = ((path + " ") + ((svgHeight - tmpHeight)).toString());
+            tmpHeight = (Math.round((options['height'] * ((dataset['data'][i] - options['min']) / (options['max'] - options['min']))) * Math.pow(10, 0)) / Math.pow(10, 0));
+            path = ((path + " ") + (((options['y'] + options['height']) - tmpHeight)).toString());
             i = (i + 1);
             if ((i < points)) {
                 path = (path + " ");

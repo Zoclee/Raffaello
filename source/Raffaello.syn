@@ -225,6 +225,7 @@ module Rafaello {
         int32 points
         int32 i 
         int32 max
+        int32 min
         string path
         int32 pointWidth
         int32 tmpHeight
@@ -232,20 +233,29 @@ module Rafaello {
         // initialize default values
 
         if not options.HasKey("x") { options["x"] = 0 }
+        if not options.HasKey("y") { options["y"] = 0 }
         if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
+        if not options.HasKey("height") { options["height"] = svgHeight - options["y"] }
 
-        // determine maximum height
+        // determine min max valuesmaximum height
 
         points = count(dataset["data"])
 
         max = dataset["data"][0]
+        min = dataset["data"][0]
         i = 1
         while i < points {
             if dataset["data"][i] > max {
                max = dataset["data"][i]
             }
+            if dataset["data"][i] < min {
+               min = dataset["data"][i]
+            }            
             i = i + 1
         }
+
+        if not options.HasKey("min") { options["min"] = min }
+        if not options.HasKey("max") { options["max"] = max }
 
         // configure styling attributes
 
@@ -263,8 +273,8 @@ module Rafaello {
         i = 0
         while i < points {       
             path = path + Str(options["x"] + pointWidth * i + pointWidth * 0.5 + (5 * i))
-            tmpHeight = Round( svgHeight * (dataset["data"][i] / max), 0 )
-            path = path + " " + Str(svgHeight - tmpHeight)
+            tmpHeight = Round( options["height"] * ((dataset["data"][i] - options["min"]) / (options["max"] - options["min"])), 0 )
+            path = path + " " + Str(options["y"] + options["height"] - tmpHeight)
             i = i + 1
             if i < points {
                 path = path + " "
