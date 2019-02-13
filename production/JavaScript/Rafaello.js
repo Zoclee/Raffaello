@@ -269,6 +269,9 @@
         if (!(options.hasOwnProperty('height'))) {
             options['height'] = (svgHeight - options['y']);
         }
+        if (!(options.hasOwnProperty('strokewidth'))) {
+            options['strokewidth'] = 1;
+        }
 
         // determine min max valuesmaximum height
 
@@ -300,8 +303,7 @@
 
         attr = JSON.parse('{}');
         attr['stroke'] = '#004000';
-        attr['stroke-opacity'] = 0.75;
-        attr['stroke-width'] = 1;
+        attr['stroke-width'] = options['strokewidth'];
         attr['fill'] = 'none';
 
         // create lines
