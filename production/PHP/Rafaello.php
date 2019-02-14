@@ -271,6 +271,9 @@ class Rafaello {
         if (!(property_exists($options, "height"))) {
             $options->{"height"} = ($svgHeight - $options->{"y"});
         }
+        if (!(property_exists($options, "stroke"))) {
+            $options->{"stroke"} = "000000";
+        }
         if (!(property_exists($options, "strokewidth"))) {
             $options->{"strokewidth"} = 1;
         }
@@ -304,7 +307,7 @@ class Rafaello {
         $pointWidth = intval(floor(($options->{"width"} - (($points - 1) * 5)) / $points));
 
         $attr = json_decode("{}");
-        $attr->{"stroke"} = "#004000";
+        $attr->{"stroke"} = ("#" . $options->{"stroke"});
         $attr->{"stroke-width"} = $options->{"strokewidth"};
         $attr->{"fill"} = "none";
 

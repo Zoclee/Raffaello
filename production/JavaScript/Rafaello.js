@@ -269,6 +269,9 @@
         if (!(options.hasOwnProperty('height'))) {
             options['height'] = (svgHeight - options['y']);
         }
+        if (!(options.hasOwnProperty('stroke'))) {
+            options['stroke'] = '000000';
+        }
         if (!(options.hasOwnProperty('strokewidth'))) {
             options['strokewidth'] = 1;
         }
@@ -302,7 +305,7 @@
         pointWidth = parseInt(Math.floor((options['width'] - ((points - 1) * 5)) / points));
 
         attr = JSON.parse('{}');
-        attr['stroke'] = '#004000';
+        attr['stroke'] = ("#" + options['stroke']);
         attr['stroke-width'] = options['strokewidth'];
         attr['fill'] = 'none';
 

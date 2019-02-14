@@ -236,6 +236,7 @@ module Rafaello {
         if not options.HasKey("y") { options["y"] = 0 }
         if not options.HasKey("width") { options["width"] = svgWidth - options["x"] }
         if not options.HasKey("height") { options["height"] = svgHeight - options["y"] }
+        if not options.HasKey("stroke") { options["stroke"] = "000000" }
         if not options.HasKey("strokewidth") { options["strokewidth"] = 1 }
 
         // determine min max valuesmaximum height
@@ -263,7 +264,7 @@ module Rafaello {
         pointWidth = (options["width"] - (points - 1) * 5) \ points
 
         attr = ParseJSON("{}")        
-        attr["stroke"] = "#004000"
+        attr["stroke"] = "#" + options["stroke"]
         attr["stroke-width"] = options["strokewidth"]
         attr["fill"] = "none"
 
