@@ -98,6 +98,14 @@
             <tr valign="top">
                 <td><div id="chart10"></div></td>
                 <td width="20px">&nbsp;</td>
+                <td>{"components":[{"type":"label","options":{"text":"This rocks"}}]}</td>
+            </tr>
+        </table>
+        <hr>        
+        <table>
+            <tr valign="top">
+                <td><div id="chart11"></div></td>
+                <td width="20px">&nbsp;</td>
                 <td>{"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]},{"data":[70, 80, 90, 100, 110, 120, 130, 140]},{"data":[0, 50, 100]},{"data":[50, 75, 100]}], "components":[{"type":"candlestickgraph","options":{"y":20, "width":600, "height":360}},{"type":"linegraph","dataset":3,"options":{"y":20, "width":600, "height":360, "min":70, "max":140, "strokewidth":3, "stroke":"aa0000"}}, {"type":"scale","dataset":4,"options":{"x":605, "y":20, "height":360,"align":"right"}}, {"type":"heatmap","dataset":5,"options":{"width":600, "y":455, "height":20}}, {"type":"bargraph","dataset":6,"options":{"width":600, "y":385, "height":65}}]}</td>
             </tr>
         </table>	        		
@@ -139,7 +147,10 @@
 
     dom = parser.parseFromString(Rafaello.Render(300, 50, {"datasets":[{"data":[10,25,50,75,100]}], "components":[{"type":"heatmap"}]}), "text/xml");
     document.getElementById('chart9').appendChild(dom.documentElement);  
-    
+
+    dom = parser.parseFromString(Rafaello.Render(300, 50, {"components":[{"type":"label","options":{"text":"This rockys"}}]}), "text/xml");
+    document.getElementById('chart10').appendChild(dom.documentElement);  
+
     dom = parser.parseFromString(Rafaello.Render(640, 480, {"datasets":[{"data":[100, 110, 120]},{"data":[120, 140, 130]},{"data":[90, 100, 70]},{"data":[110, 130, 90]},{"data":[70, 80, 90, 100, 110, 120, 130, 140]},{"data":[0, 50, 100]},{"data":[50, 75, 100]}], "components":[{"type":"candlestickgraph","options":{"y":20, "width":600, "height":360}},{"type":"linegraph","dataset":3,"options":{"y":20, "width":600, "height":360, "min":70, "max":140, "strokewidth":3, "stroke":"aa0000"}}, {"type":"scale","dataset":4,"options":{"x":605, "y":20, "height":360,"align":"right"}}, {"type":"heatmap","dataset":5,"options":{"width":600, "y":455, "height":20}}, {"type":"bargraph","dataset":6,"options":{"width":600, "y":385, "height":65}}]}), "text/xml");
-    document.getElementById('chart10').appendChild(dom.documentElement);    
+    document.getElementById('chart11').appendChild(dom.documentElement);    
 </script>

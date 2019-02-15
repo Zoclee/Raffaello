@@ -242,6 +242,51 @@
         return component;
     }
 
+    // ***** Label ********************
+
+    Rafaello.Label = function (svgWidth, svgHeight, dataset, options) {
+        var component = '';
+        var attr = JSON.parse('{}');
+        var i = 0;
+        var value = 0;
+
+        // initialize default values
+
+        if (!(options.hasOwnProperty('x'))) {
+            options['x'] = 0;
+        }
+        if (!(options.hasOwnProperty('y'))) {
+            options['y'] = 0;
+        }
+        if (!(options.hasOwnProperty('width'))) {
+            options['width'] = (svgWidth - options['x']);
+        }
+        if (!(options.hasOwnProperty('height'))) {
+            options['height'] = 20;
+        }
+
+        // create background
+
+        attr = JSON.parse('{}');
+        attr['width'] = options['width'];
+        attr['height'] = options['height'];
+        attr['stroke-width'] = 1;
+        attr['x'] = options['x'];
+        attr['y'] = options['y'];
+        attr['stroke'] = '#000000';
+        component = (component + Rafaello.BuildElement('rect', attr, ''));
+
+        // create text
+
+        attr = JSON.parse('{}');
+        attr['fill'] = '#ffffff';
+        attr['x'] = (options['x'] + 5);
+        attr['y'] = (options['y'] + 14);
+        component = (component + Rafaello.BuildElement('text', attr, options['text']));
+
+        return component;
+    }
+
     // ***** LineGraph ********************
 
     Rafaello.LineGraph = function (svgWidth, svgHeight, dataset, options) {
@@ -591,7 +636,9 @@
             } else {
                 datasetIndex = 0;
             }
-            dataset = object['datasets'][datasetIndex];
+            if (object.hasOwnProperty('datasets')) {
+                dataset = object['datasets'][datasetIndex];
+            }
 
             options = JSON.parse('{}');
             if (component.hasOwnProperty('options')) {
@@ -609,6 +656,9 @@
                     break;
                 case "heatmap":
                     composition = (composition + Rafaello.HeatMap((svgWidth - 1), (svgHeight - 1), dataset, options));
+                    break;
+                case "label":
+                    composition = (composition + Rafaello.Label((svgWidth - 1), (svgHeight - 1), dataset, options));
                     break;
                 case "linegraph":
                     composition = (composition + Rafaello.LineGraph((svgWidth - 1), (svgHeight - 1), dataset, options));

@@ -244,6 +244,51 @@ class Rafaello {
         return $component;
     }
 
+    // ***** Label ********************
+
+    public static function Label($svgWidth, $svgHeight, $dataset, $options) {
+        $component = "";
+        $attr = json_decode("{}");
+        $i = 0;
+        $value = floatval(0);
+
+        // initialize default values
+
+        if (!(property_exists($options, "x"))) {
+            $options->{"x"} = 0;
+        }
+        if (!(property_exists($options, "y"))) {
+            $options->{"y"} = 0;
+        }
+        if (!(property_exists($options, "width"))) {
+            $options->{"width"} = ($svgWidth - $options->{"x"});
+        }
+        if (!(property_exists($options, "height"))) {
+            $options->{"height"} = 20;
+        }
+
+        // create background
+
+        $attr = json_decode("{}");
+        $attr->{"width"} = $options->{"width"};
+        $attr->{"height"} = $options->{"height"};
+        $attr->{"stroke-width"} = 1;
+        $attr->{"x"} = $options->{"x"};
+        $attr->{"y"} = $options->{"y"};
+        $attr->{"stroke"} = "#000000";
+        $component = ($component . self::BuildElement("rect", $attr, ""));
+
+        // create text
+
+        $attr = json_decode("{}");
+        $attr->{"fill"} = "#ffffff";
+        $attr->{"x"} = ($options->{"x"} + 5);
+        $attr->{"y"} = ($options->{"y"} + 14);
+        $component = ($component . self::BuildElement("text", $attr, $options->{"text"}));
+
+        return $component;
+    }
+
     // ***** LineGraph ********************
 
     public static function LineGraph($svgWidth, $svgHeight, $dataset, $options) {
@@ -593,7 +638,9 @@ class Rafaello {
             } else {
                 $datasetIndex = 0;
             }
-            $dataset = $object->{"datasets"}[$datasetIndex];
+            if (property_exists($object, "datasets")) {
+                $dataset = $object->{"datasets"}[$datasetIndex];
+            }
 
             $options = json_decode("{}");
             if (property_exists($component, "options")) {
@@ -611,6 +658,9 @@ class Rafaello {
                     break;
                 case "heatmap":
                     $composition = ($composition . self::HeatMap(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
+                    break;
+                case "label":
+                    $composition = ($composition . self::Label(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
                     break;
                 case "linegraph":
                     $composition = ($composition . self::LineGraph(($svgWidth - 1), ($svgHeight - 1), $dataset, $options));
